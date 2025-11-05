@@ -241,80 +241,182 @@ export default function Dashboard() {
               gap: 60,
             }}
           >
-            <div style={{ backgroundColor: '#fff', padding: 24, borderRadius: 12, boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
-              <h3
+            <Link href="/trends/stress" legacyBehavior>
+              <a
                 style={{
-                  fontSize: '1.125rem',
-                  fontWeight: 600,
-                  color: '#374151',
-                  marginBottom: 16,
-                  textAlign: 'center',
+                  display: 'block',
+                  backgroundColor: '#fff',
+                  padding: 24,
+                  borderRadius: 12,
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+                  textDecoration: 'none',
+                  color: 'inherit',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  position: 'relative'
                 }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                  e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.1)';
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.05)';
+                }}
+                aria-label="Open Stress trend details"
               >
-                Stress Level Trend
-              </h3>
-              <Line
-                options={{
-                  ...chartOptions,
-                  plugins: {
-                    ...chartOptions.plugins,
-                    title: { display: true, text: 'Stress Level Over Time' },
-                  },
-                }}
-                data={stressData}
-              />
-            </div>
-
-            <div style={{ backgroundColor: '#fff', padding: 24, borderRadius: 12, boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
-              <h3
-                style={{
-                  fontSize: '1.125rem',
-                  fontWeight: 600,
-                  color: '#374151',
-                  marginBottom: 16,
-                  textAlign: 'center',
-                }}
-              >
-                Mood Trend
-              </h3>
-              <Line
-                options={{
-                  ...chartOptions,
-                  plugins: {
-                    ...chartOptions.plugins,
-                    title: {
-                      display: true,
-                      text: 'Mood Over Time (1=Sad, 2=Neutral, 3=Happy)',
+                <div style={{
+                  position: 'absolute',
+                  top: 16,
+                  right: 16,
+                  color: '#6b7280',
+                  fontSize: '14px',
+                  fontWeight: 500
+                }}>
+                  View details →
+                </div>
+                <h3
+                  style={{
+                    fontSize: '1.125rem',
+                    fontWeight: 600,
+                    color: '#374151',
+                    marginBottom: 16,
+                    textAlign: 'center',
+                  }}
+                >
+                  Stress Level Trend
+                </h3>
+                <Line
+                  options={{
+                    ...chartOptions,
+                    plugins: {
+                      ...chartOptions.plugins,
+                      title: { display: true, text: 'Stress Level Over Time' },
                     },
-                  },
-                }}
-                data={moodData}
-              />
-            </div>
+                  }}
+                  data={stressData}
+                />
+              </a>
+            </Link>
 
-            <div style={{ backgroundColor: '#fff', padding: 24, borderRadius: 12, boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
-              <h3
+            <Link href="/trends/mood" legacyBehavior>
+              <a
                 style={{
-                  fontSize: '1.125rem',
-                  fontWeight: 600,
-                  color: '#374151',
-                  marginBottom: 16,
-                  textAlign: 'center',
+                  display: 'block',
+                  backgroundColor: '#fff',
+                  padding: 24,
+                  borderRadius: 12,
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+                  textDecoration: 'none',
+                  color: 'inherit',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  position: 'relative'
                 }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                  e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.1)';
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.05)';
+                }}
+                aria-label="Open Mood trend details"
               >
-                Sleep Hours Trend
-              </h3>
-              <Line
-                options={{
-                  ...chartOptions,
-                  plugins: {
-                    ...chartOptions.plugins,
-                    title: { display: true, text: 'Sleep Hours Over Time' },
-                  },
+                <div style={{
+                  position: 'absolute',
+                  top: 16,
+                  right: 16,
+                  color: '#6b7280',
+                  fontSize: '14px',
+                  fontWeight: 500
+                }}>
+                  View details →
+                </div>
+                <h3
+                  style={{
+                    fontSize: '1.125rem',
+                    fontWeight: 600,
+                    color: '#374151',
+                    marginBottom: 16,
+                    textAlign: 'center',
+                  }}
+                >
+                  Mood Trend
+                </h3>
+                <Line
+                  options={{
+                    ...chartOptions,
+                    plugins: {
+                      ...chartOptions.plugins,
+                      title: {
+                        display: true,
+                        text: 'Mood Over Time (1=Sad, 2=Neutral, 3=Happy)',
+                      },
+                    },
+                  }}
+                  data={moodData}
+                />
+              </a>
+            </Link>
+
+            <Link href="/trends/sleep" legacyBehavior>
+              <a
+                style={{
+                  display: 'block',
+                  backgroundColor: '#fff',
+                  padding: 24,
+                  borderRadius: 12,
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+                  textDecoration: 'none',
+                  color: 'inherit',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  position: 'relative'
                 }}
-                data={sleepData}
-              />
-            </div>
+                onMouseOver={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                  e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.1)';
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.05)';
+                }}
+                aria-label="Open Sleep trend details"
+              >
+                <div style={{
+                  position: 'absolute',
+                  top: 16,
+                  right: 16,
+                  color: '#6b7280',
+                  fontSize: '14px',
+                  fontWeight: 500
+                }}>
+                  View details →
+                </div>
+                <h3
+                  style={{
+                    fontSize: '1.125rem',
+                    fontWeight: 600,
+                    color: '#374151',
+                    marginBottom: 16,
+                    textAlign: 'center',
+                  }}
+                >
+                  Sleep Hours Trend
+                </h3>
+                <Line
+                  options={{
+                    ...chartOptions,
+                    plugins: {
+                      ...chartOptions.plugins,
+                      title: { display: true, text: 'Sleep Hours Over Time' },
+                    },
+                  }}
+                  data={sleepData}
+                />
+              </a>
+            </Link>
           </div>
         </section>
       )}
