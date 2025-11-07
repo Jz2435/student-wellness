@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-import { useAuth } from '../hooks/useAuth';
-import Link from 'next/link';
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { useAuth } from "../hooks/useAuth";
+import Link from "next/link";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -11,8 +11,8 @@ import {
   Title,
   Tooltip,
   Legend,
-} from 'chart.js';
-import { Line } from 'react-chartjs-2';
+} from "chart.js";
+import { Line } from "react-chartjs-2";
 
 ChartJS.register(
   CategoryScale,
@@ -40,20 +40,20 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (!user) {
-      router.replace('/');
+      router.replace("/");
     }
   }, [user, router]);
 
   useEffect(() => {
     const fetchReports = async () => {
       try {
-        const response = await fetch('http://localhost:8001/api/self-reports');
+        const response = await fetch("http://localhost:8001/api/self-reports");
         if (response.ok) {
           const data = await response.json();
           setReports(data);
         }
       } catch (error) {
-        console.error('Failed to fetch reports:', error);
+        console.error("Failed to fetch reports:", error);
       }
     };
 
@@ -68,17 +68,17 @@ export default function Dashboard() {
   const sortedReports = reports.sort(
     (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
   );
-  const labels = sortedReports.map(report =>
+  const labels = sortedReports.map((report) =>
     new Date(report.timestamp).toLocaleDateString()
   );
 
   const moodToNumber = (mood: string) => {
     switch (mood) {
-      case 'happy':
+      case "happy":
         return 3;
-      case 'neutral':
+      case "neutral":
         return 2;
-      case 'sad':
+      case "sad":
         return 1;
       default:
         return 2;
@@ -89,10 +89,10 @@ export default function Dashboard() {
     labels,
     datasets: [
       {
-        label: 'Stress Level',
-        data: sortedReports.map(report => report.stress_level),
-        borderColor: 'rgb(255, 99, 132)',
-        backgroundColor: 'rgba(255, 99, 132, 0.4)',
+        label: "Stress Level",
+        data: sortedReports.map((report) => report.stress_level),
+        borderColor: "rgb(255, 99, 132)",
+        backgroundColor: "rgba(255, 99, 132, 0.4)",
         tension: 0.3,
         pointRadius: 4,
       },
@@ -103,10 +103,10 @@ export default function Dashboard() {
     labels,
     datasets: [
       {
-        label: 'Mood (1=Sad, 2=Neutral, 3=Happy)',
-        data: sortedReports.map(report => moodToNumber(report.mood)),
-        borderColor: 'rgb(54, 162, 235)',
-        backgroundColor: 'rgba(54, 162, 235, 0.4)',
+        label: "Mood (1=Sad, 2=Neutral, 3=Happy)",
+        data: sortedReports.map((report) => moodToNumber(report.mood)),
+        borderColor: "rgb(54, 162, 235)",
+        backgroundColor: "rgba(54, 162, 235, 0.4)",
         tension: 0.3,
         pointRadius: 4,
       },
@@ -117,10 +117,10 @@ export default function Dashboard() {
     labels,
     datasets: [
       {
-        label: 'Sleep Hours',
-        data: sortedReports.map(report => report.sleep_hours),
-        borderColor: 'rgb(75, 192, 192)',
-        backgroundColor: 'rgba(75, 192, 192, 0.4)',
+        label: "Sleep Hours",
+        data: sortedReports.map((report) => report.sleep_hours),
+        borderColor: "rgb(75, 192, 192)",
+        backgroundColor: "rgba(75, 192, 192, 0.4)",
         tension: 0.3,
         pointRadius: 4,
       },
@@ -131,13 +131,12 @@ export default function Dashboard() {
     responsive: true,
     plugins: {
       legend: {
-        position: 'top' as const,
-        labels: { boxWidth: 12, font: { size: 12 } },
+        display: false,
       },
       title: {
         display: true,
-        text: 'Trend Analysis',
-        font: { size: 16, weight: 'bold' },
+        text: "Trend Analysis",
+        font: { size: 16, weight: "bold" },
         padding: { top: 10, bottom: 10 },
       },
     },
@@ -146,55 +145,55 @@ export default function Dashboard() {
   return (
     <main
       style={{
-        padding: '40px 60px',
+        padding: "40px 60px",
         maxWidth: 1200,
-        margin: '0 auto',
-        backgroundColor: '#f9fafb',
-        minHeight: '100vh',
+        margin: "0 auto",
+        backgroundColor: "#f9fafb",
+        minHeight: "100vh",
       }}
     >
       <header
         style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
           marginBottom: 40,
         }}
       >
         <div>
           <h1
             style={{
-              fontSize: '2.25rem',
+              fontSize: "2.25rem",
               fontWeight: 700,
-              color: '#1e3a8a',
+              color: "#1e3a8a",
               marginBottom: 8,
             }}
           >
             Dashboard
           </h1>
-          <p style={{ color: '#4b5563' }}>
+          <p style={{ color: "#4b5563" }}>
             Signed in as: <strong>{user.name}</strong> ({user.email})
           </p>
         </div>
 
-        <div style={{ display: 'flex', gap: '12px' }}>
+        <div style={{ display: "flex", gap: "12px" }}>
           <Link href="/report" legacyBehavior>
             <a
               style={{
-                padding: '10px 20px',
-                backgroundColor: '#2563eb',
-                color: '#fff',
+                padding: "10px 20px",
+                backgroundColor: "#2563eb",
+                color: "#fff",
                 borderRadius: 6,
                 fontWeight: 600,
-                textDecoration: 'none',
-                boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
-                transition: 'background-color 0.2s',
+                textDecoration: "none",
+                boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
+                transition: "background-color 0.2s",
               }}
-              onMouseOver={e =>
-                (e.currentTarget.style.backgroundColor = '#1d4ed8')
+              onMouseOver={(e) =>
+                (e.currentTarget.style.backgroundColor = "#1d4ed8")
               }
-              onMouseOut={e =>
-                (e.currentTarget.style.backgroundColor = '#2563eb')
+              onMouseOut={(e) =>
+                (e.currentTarget.style.backgroundColor = "#2563eb")
               }
             >
               Submit Daily Report
@@ -203,15 +202,15 @@ export default function Dashboard() {
           <button
             onClick={() => {
               logout();
-              router.push('/');
+              router.push("/");
             }}
             style={{
-              padding: '10px 20px',
-              backgroundColor: '#e5e7eb',
-              color: '#374151',
+              padding: "10px 20px",
+              backgroundColor: "#e5e7eb",
+              color: "#374151",
               borderRadius: 6,
               fontWeight: 600,
-              cursor: 'pointer',
+              cursor: "pointer",
             }}
           >
             Sign out
@@ -223,11 +222,11 @@ export default function Dashboard() {
         <section>
           <h2
             style={{
-              fontSize: '1.5rem',
+              fontSize: "1.5rem",
               fontWeight: 700,
-              color: '#111827',
+              color: "#111827",
               marginBottom: 24,
-              borderBottom: '2px solid #e5e7eb',
+              borderBottom: "2px solid #e5e7eb",
               paddingBottom: 8,
             }}
           >
@@ -236,52 +235,56 @@ export default function Dashboard() {
 
           <div
             style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr',
+              display: "grid",
+              gridTemplateColumns: "1fr",
               gap: 60,
             }}
           >
             <Link href="/trends/stress" legacyBehavior>
               <a
                 style={{
-                  display: 'block',
-                  backgroundColor: '#fff',
+                  display: "block",
+                  backgroundColor: "#fff",
                   padding: 24,
                   borderRadius: 12,
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
-                  textDecoration: 'none',
-                  color: 'inherit',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease',
-                  position: 'relative'
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+                  textDecoration: "none",
+                  color: "inherit",
+                  cursor: "pointer",
+                  transition: "all 0.2s ease",
+                  position: "relative",
                 }}
                 onMouseOver={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-2px)';
-                  e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.1)';
+                  e.currentTarget.style.transform = "translateY(-2px)";
+                  e.currentTarget.style.boxShadow =
+                    "0 8px 24px rgba(0,0,0,0.1)";
                 }}
                 onMouseOut={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.05)';
+                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.boxShadow =
+                    "0 4px 12px rgba(0,0,0,0.05)";
                 }}
                 aria-label="Open Stress trend details"
               >
-                <div style={{
-                  position: 'absolute',
-                  top: 16,
-                  right: 16,
-                  color: '#6b7280',
-                  fontSize: '14px',
-                  fontWeight: 500
-                }}>
+                <div
+                  style={{
+                    position: "absolute",
+                    top: 16,
+                    right: 16,
+                    color: "#6b7280",
+                    fontSize: "14px",
+                    fontWeight: 500,
+                  }}
+                >
                   View details →
                 </div>
                 <h3
                   style={{
-                    fontSize: '1.125rem',
+                    fontSize: "1.125rem",
                     fontWeight: 600,
-                    color: '#374151',
+                    color: "#374151",
                     marginBottom: 16,
-                    textAlign: 'center',
+                    textAlign: "center",
                   }}
                 >
                   Stress Level Trend
@@ -291,7 +294,7 @@ export default function Dashboard() {
                     ...chartOptions,
                     plugins: {
                       ...chartOptions.plugins,
-                      title: { display: true, text: 'Stress Level Over Time' },
+                      title: { display: true, text: "Stress Level Over Time" },
                     },
                   }}
                   data={stressData}
@@ -302,44 +305,48 @@ export default function Dashboard() {
             <Link href="/trends/mood" legacyBehavior>
               <a
                 style={{
-                  display: 'block',
-                  backgroundColor: '#fff',
+                  display: "block",
+                  backgroundColor: "#fff",
                   padding: 24,
                   borderRadius: 12,
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
-                  textDecoration: 'none',
-                  color: 'inherit',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease',
-                  position: 'relative'
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+                  textDecoration: "none",
+                  color: "inherit",
+                  cursor: "pointer",
+                  transition: "all 0.2s ease",
+                  position: "relative",
                 }}
                 onMouseOver={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-2px)';
-                  e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.1)';
+                  e.currentTarget.style.transform = "translateY(-2px)";
+                  e.currentTarget.style.boxShadow =
+                    "0 8px 24px rgba(0,0,0,0.1)";
                 }}
                 onMouseOut={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.05)';
+                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.boxShadow =
+                    "0 4px 12px rgba(0,0,0,0.05)";
                 }}
                 aria-label="Open Mood trend details"
               >
-                <div style={{
-                  position: 'absolute',
-                  top: 16,
-                  right: 16,
-                  color: '#6b7280',
-                  fontSize: '14px',
-                  fontWeight: 500
-                }}>
+                <div
+                  style={{
+                    position: "absolute",
+                    top: 16,
+                    right: 16,
+                    color: "#6b7280",
+                    fontSize: "14px",
+                    fontWeight: 500,
+                  }}
+                >
                   View details →
                 </div>
                 <h3
                   style={{
-                    fontSize: '1.125rem',
+                    fontSize: "1.125rem",
                     fontWeight: 600,
-                    color: '#374151',
+                    color: "#374151",
                     marginBottom: 16,
-                    textAlign: 'center',
+                    textAlign: "center",
                   }}
                 >
                   Mood Trend
@@ -351,7 +358,7 @@ export default function Dashboard() {
                       ...chartOptions.plugins,
                       title: {
                         display: true,
-                        text: 'Mood Over Time (1=Sad, 2=Neutral, 3=Happy)',
+                        text: "Mood Over Time (1=Sad, 2=Neutral, 3=Happy)",
                       },
                     },
                   }}
@@ -363,44 +370,48 @@ export default function Dashboard() {
             <Link href="/trends/sleep" legacyBehavior>
               <a
                 style={{
-                  display: 'block',
-                  backgroundColor: '#fff',
+                  display: "block",
+                  backgroundColor: "#fff",
                   padding: 24,
                   borderRadius: 12,
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
-                  textDecoration: 'none',
-                  color: 'inherit',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease',
-                  position: 'relative'
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+                  textDecoration: "none",
+                  color: "inherit",
+                  cursor: "pointer",
+                  transition: "all 0.2s ease",
+                  position: "relative",
                 }}
                 onMouseOver={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-2px)';
-                  e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.1)';
+                  e.currentTarget.style.transform = "translateY(-2px)";
+                  e.currentTarget.style.boxShadow =
+                    "0 8px 24px rgba(0,0,0,0.1)";
                 }}
                 onMouseOut={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.05)';
+                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.boxShadow =
+                    "0 4px 12px rgba(0,0,0,0.05)";
                 }}
                 aria-label="Open Sleep trend details"
               >
-                <div style={{
-                  position: 'absolute',
-                  top: 16,
-                  right: 16,
-                  color: '#6b7280',
-                  fontSize: '14px',
-                  fontWeight: 500
-                }}>
+                <div
+                  style={{
+                    position: "absolute",
+                    top: 16,
+                    right: 16,
+                    color: "#6b7280",
+                    fontSize: "14px",
+                    fontWeight: 500,
+                  }}
+                >
                   View details →
                 </div>
                 <h3
                   style={{
-                    fontSize: '1.125rem',
+                    fontSize: "1.125rem",
                     fontWeight: 600,
-                    color: '#374151',
+                    color: "#374151",
                     marginBottom: 16,
-                    textAlign: 'center',
+                    textAlign: "center",
                   }}
                 >
                   Sleep Hours Trend
@@ -410,7 +421,7 @@ export default function Dashboard() {
                     ...chartOptions,
                     plugins: {
                       ...chartOptions.plugins,
-                      title: { display: true, text: 'Sleep Hours Over Time' },
+                      title: { display: true, text: "Sleep Hours Over Time" },
                     },
                   }}
                   data={sleepData}
@@ -422,7 +433,7 @@ export default function Dashboard() {
       )}
 
       {reports.length === 0 && (
-        <p style={{ marginTop: 20, color: '#6b7280', fontStyle: 'italic' }}>
+        <p style={{ marginTop: 20, color: "#6b7280", fontStyle: "italic" }}>
           No reports submitted yet. Submit your first report to see trends!
         </p>
       )}
