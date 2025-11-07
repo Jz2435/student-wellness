@@ -15,3 +15,11 @@ class SelfReport(SQLModel, table=True):
     sleep_hours: float
     comments: str = Field(default="")
     timestamp: datetime = Field(default_factory=datetime.utcnow)
+
+class Notification(SQLModel, table=True):
+    id: int = Field(default=None, primary_key=True)
+    student_id: int = Field(foreign_key="student.id")
+    title: str
+    message: str
+    is_read: bool = Field(default=False)
+    timestamp: datetime = Field(default_factory=datetime.utcnow)

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useAuth } from "../hooks/useAuth";
 import Link from "next/link";
+import NotificationBell from "../components/NotificationBell";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -179,6 +180,7 @@ export default function Dashboard() {
         </div>
 
         <div style={{ display: "flex", gap: "12px" }}>
+          <NotificationBell />
           <Link href="/report" legacyBehavior>
             <a
               style={{
@@ -219,6 +221,8 @@ export default function Dashboard() {
           </button>
         </div>
       </header>
+
+      <NotificationBell />
 
       {reports.length > 0 && (
         <section>

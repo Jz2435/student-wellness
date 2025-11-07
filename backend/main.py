@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from sqlmodel import SQLModel, create_engine, Session, select
-from models import SelfReport, Student
+from models import SelfReport, Student, Notification
 from pydantic import BaseModel
 import bcrypt
 import secrets
@@ -105,3 +105,80 @@ async def get_self_reports(student_id: int = None, session: Session = Depends(ge
     else:
         reports = session.exec(select(SelfReport)).all()
     return reports
+
+
+@app.get("/api/notifications")
+async def get_notifications(student_id: str, session: Session = Depends(get_session)):
+    notifications = session.exec(
+        select(Notification).where(Notification.student_id == int(student_id)).order_by(Notification.timestamp.desc())
+    ).all()
+    return notifications
+
+
+@app.put("/api/notifications/{notification_id}/read")
+async def mark_notification_read(notification_id: int, session: Session = Depends(get_session)):
+    notification = session.get(Notification, notification_id)
+    if not notification:
+        raise HTTPException(status_code=404, detail="Notification not found")
+    notification.is_read = True
+    session.commit()
+    return {"message": "Notification marked as read"}
+
+
+@app.post("/api/notifications")
+async def create_notification(notification: Notification, session: Session = Depends(get_session)):
+    session.add(notification)
+    session.commit()
+    session.refresh(notification)
+    return {"message": "Notification created", "notification_id": notification.id}
+
+
+@app.post("/api/sample-notifications")
+async def create_sample_notifications(student_id: str, session: Session = Depends(get_session)):
+    from datetime import datetime, timedelta
+    import random
+    
+    sample_notifications = [
+        {
+            "student_id": int(student_id),
+            "title": "Welcome to Wellness Tracker!",
+            "message": "Thank you for joining our wellness program. Start by submitting your first daily report.",
+            "is_read": False,
+            "timestamp": datetime.utcnow() - timedelta(days=2)
+        },
+        {
+            "student_id": int(student_id),
+            "title": "Daily Report Reminder",
+            "message": "Don't forget to submit your daily wellness report. Consistent tracking helps you understand your patterns.",
+            "is_read": False,
+            "timestamp": datetime.utcnow() - timedelta(hours=12)
+        },
+        {
+            "student_id": int(student_id),
+            "title": "Stress Level Alert",
+            "message": "Your recent stress levels have been high. Consider taking some time for relaxation activities.",
+            "is_read": True,
+            "timestamp": datetime.utcnow() - timedelta(days=1)
+        },
+        {
+            "student_id": int(student_id),
+            "title": "Sleep Pattern Insight",
+            "message": "Your sleep data shows improvement! Keep up the good work with your sleep hygiene.",
+            "is_read": True,
+            "timestamp": datetime.utcnow() - timedelta(days=3)
+        },
+        {
+            "student_id": int(student_id),
+            "title": "Mood Tracking Milestone",
+            "message": "You've been tracking your mood for a week now. Great job maintaining consistency!",
+            "is_read": False,
+            "timestamp": datetime.utcnow() - timedelta(hours=6)
+        }
+    ]
+    
+    for notif_data in sample_notifications:
+        notification = Notification(**notif_data)
+        session.add(notification)
+    
+    session.commit()
+    return {"message": "Sample notifications created"}
