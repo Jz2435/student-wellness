@@ -1,8 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
 type Data = {
-  user?: { id: string; name: string; email?: string };
+  user?: { id: string; name: string; email: string };
   token?: string;
+  message?: string;
   error?: string;
 };
 
@@ -18,7 +19,7 @@ export default async function handler(
   try {
     // Forward to backend
     const backendUrl = process.env.BACKEND_URL || "http://localhost:8001";
-    const response = await fetch(`${backendUrl}/api/login`, {
+    const response = await fetch(`${backendUrl}/api/signup`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -33,7 +34,7 @@ export default async function handler(
     } else {
       return res
         .status(response.status)
-        .json({ error: data.detail || "Login failed" });
+        .json({ error: data.detail || "Signup failed" });
     }
   } catch (error) {
     console.error("Error forwarding to backend:", error);

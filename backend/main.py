@@ -1,7 +1,19 @@
 from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from sqlmodel import SQLModel, create_engine, Session, select
-from models import SelfReport
+from models import SelfReport, Student
+from pydantic import BaseModel
+import bcrypt
+import secrets
+
+class SignupRequest(BaseModel):
+    name: str
+    email: str
+    password: str
+
+class LoginRequest(BaseModel):
+    email: str
+    password: str
 
 app = FastAPI()
 
@@ -38,6 +50,46 @@ def get_session():
         yield session
 
 
+@app.post("/api/signup")
+async def signup(request: SignupRequest, session: Session = Depends(get_session)):
+    if not request.name or not request.email or not request.password:
+        raise HTTPException(status_code=400, detail="All fields are required")
+    
+    # Check if email exists
+    existing = session.exec(select(Student).where(Student.email == request.email)).first()
+    if existing:
+        raise HTTPException(status_code=400, detail="Email already in use")
+    
+    # Hash password
+    hashed = bcrypt.hashpw(request.password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+    
+    # Create student
+    student = Student(name=request.name, email=request.email, password=hashed)
+    session.add(student)
+    session.commit()
+    session.refresh(student)
+    
+    # Generate token
+    token = secrets.token_hex(16)
+    
+    return {"message": "Account created successfully", "token": token, "user": {"id": str(student.id), "name": student.name, "email": student.email}}
+
+
+@app.post("/api/login")
+async def login(request: LoginRequest, session: Session = Depends(get_session)):
+    if not request.email or not request.password:
+        raise HTTPException(status_code=400, detail="Email and password are required")
+    
+    student = session.exec(select(Student).where(Student.email == request.email)).first()
+    if not student or not bcrypt.checkpw(request.password.encode('utf-8'), student.password.encode('utf-8')):
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+    
+    # Generate token
+    token = secrets.token_hex(16)
+    
+    return {"token": token, "user": {"id": str(student.id), "name": student.name, "email": student.email}}
+
+
 @app.post("/api/self-report")
 async def create_self_report(report: SelfReport, session: Session = Depends(get_session)):
     session.add(report)
@@ -47,6 +99,9 @@ async def create_self_report(report: SelfReport, session: Session = Depends(get_
 
 
 @app.get("/api/self-reports")
-async def get_self_reports(session: Session = Depends(get_session)):
-    reports = session.exec(select(SelfReport)).all()
+async def get_self_reports(student_id: int = None, session: Session = Depends(get_session)):
+    if student_id:
+        reports = session.exec(select(SelfReport).where(SelfReport.student_id == student_id)).all()
+    else:
+        reports = session.exec(select(SelfReport)).all()
     return reports

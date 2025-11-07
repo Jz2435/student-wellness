@@ -47,7 +47,9 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchReports = async () => {
       try {
-        const response = await fetch("http://localhost:8001/api/self-reports");
+        const response = await fetch(
+          `http://localhost:8001/api/self-reports?student_id=${user.id}`
+        );
         if (response.ok) {
           const data = await response.json();
           setReports(data);
