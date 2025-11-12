@@ -222,8 +222,6 @@ export default function Dashboard() {
         </div>
       </header>
 
-      <NotificationBell />
-
       {reports.length > 0 && (
         <section>
           <h2

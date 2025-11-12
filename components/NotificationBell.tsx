@@ -96,53 +96,66 @@ const NotificationBell: React.FC = () => {
           ) : (
             <>
               {recentNotifications.map((notification) => (
-                <div
+                <Link
                   key={notification.id}
-                  onClick={() => handleNotificationClick(notification.id)}
-                  style={{
-                    padding: "12px 16px",
-                    borderBottom: "1px solid #f3f4f6",
-                    cursor: "pointer",
-                    backgroundColor: notification.is_read ? "white" : "#fef3c7",
-                    transition: "background-color 0.2s",
-                  }}
-                  onMouseOver={(e) =>
-                    (e.currentTarget.style.backgroundColor = "#f9fafb")
-                  }
-                  onMouseOut={(e) =>
-                    (e.currentTarget.style.backgroundColor =
-                      notification.is_read ? "white" : "#fef3c7")
-                  }
+                  href={`/notification/${notification.id}`}
+                  legacyBehavior
                 >
-                  <div
-                    style={{
-                      fontWeight: "bold",
-                      fontSize: "14px",
-                      color: "#374151",
-                      marginBottom: "4px",
+                  <a
+                    onClick={() => {
+                      markAsRead(notification.id);
+                      setIsOpen(false);
                     }}
-                  >
-                    {notification.title}
-                  </div>
-                  <div
                     style={{
-                      fontSize: "13px",
-                      color: "#6b7280",
-                      lineHeight: "1.4",
+                      display: "block",
+                      padding: "12px 16px",
+                      borderBottom: "1px solid #f3f4f6",
+                      cursor: "pointer",
+                      backgroundColor: notification.is_read
+                        ? "white"
+                        : "#fef3c7",
+                      transition: "background-color 0.2s",
+                      textDecoration: "none",
+                      color: "inherit",
                     }}
+                    onMouseOver={(e) =>
+                      (e.currentTarget.style.backgroundColor = "#f9fafb")
+                    }
+                    onMouseOut={(e) =>
+                      (e.currentTarget.style.backgroundColor =
+                        notification.is_read ? "white" : "#fef3c7")
+                    }
                   >
-                    {notification.message}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: "11px",
-                      color: "#9ca3af",
-                      marginTop: "4px",
-                    }}
-                  >
-                    {new Date(notification.timestamp).toLocaleDateString()}
-                  </div>
-                </div>
+                    <div
+                      style={{
+                        fontWeight: "bold",
+                        fontSize: "14px",
+                        color: "#374151",
+                        marginBottom: "4px",
+                      }}
+                    >
+                      {notification.title}
+                    </div>
+                    <div
+                      style={{
+                        fontSize: "13px",
+                        color: "#6b7280",
+                        lineHeight: "1.4",
+                      }}
+                    >
+                      {notification.message}
+                    </div>
+                    <div
+                      style={{
+                        fontSize: "11px",
+                        color: "#9ca3af",
+                        marginTop: "4px",
+                      }}
+                    >
+                      {new Date(notification.timestamp).toLocaleDateString()}
+                    </div>
+                  </a>
+                </Link>
               ))}
 
               <div

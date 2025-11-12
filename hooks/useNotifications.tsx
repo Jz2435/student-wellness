@@ -74,6 +74,16 @@ export const NotificationProvider = ({ children }: { children: ReactNode }) => {
     fetchNotifications();
   }, [user]);
 
+  useEffect(() => {
+    if (!user) return;
+
+    const interval = setInterval(() => {
+      refreshNotifications();
+    }, 10000); // Refresh every 10 seconds
+
+    return () => clearInterval(interval);
+  }, [user]);
+
   const unreadCount = notifications.filter((n) => !n.is_read).length;
 
   return (

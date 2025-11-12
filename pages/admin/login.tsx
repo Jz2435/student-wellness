@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import { useRouter } from "next/router";
-import { useAuth } from "../hooks/useAuth";
+import Link from "next/link";
 
-export default function Home() {
+export default function AdminLogin() {
   const router = useRouter();
-  const { login } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -27,6 +26,7 @@ export default function Home() {
     setLoading(true);
 
     try {
+      // For now, use the same login API; in production, this would be admin-specific
       const res = await fetch("/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -37,8 +37,10 @@ export default function Home() {
       if (!res.ok) throw new Error(data?.error || "Login failed");
       if (!data.token || !data.user) throw new Error("Invalid login response");
 
-      login(data.token, data.user);
-      router.push("/dashboard");
+      // TODO: Check if user is admin; for now, assume admin login
+      // In production, add admin role check
+      alert("Admin login successful! Redirecting to admin dashboard...");
+      router.push("/admin/dashboard"); // TODO: Create admin dashboard
     } catch (e: any) {
       setError(e?.message || "Login failed");
       setLoading(false);
@@ -50,7 +52,7 @@ export default function Home() {
       style={{
         minHeight: "100vh",
         background:
-          "linear-gradient(135deg, #60a5fa 0%, #3b82f6 50%, #1e3a8a 100%)",
+          "linear-gradient(135deg, #7c3aed 0%, #a855f7 50%, #581c87 100%)",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -76,16 +78,16 @@ export default function Home() {
             style={{
               width: "72px",
               height: "72px",
-              backgroundColor: "#10b981",
+              backgroundColor: "#7c3aed",
               borderRadius: "50%",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               margin: "0 auto 20px",
-              boxShadow: "0 6px 14px rgba(16, 185, 129, 0.4)",
+              boxShadow: "0 6px 14px rgba(124, 58, 237, 0.4)",
             }}
           >
-            <span style={{ fontSize: "32px", color: "white" }}>🌿</span>
+            <span style={{ fontSize: "32px", color: "white" }}>⚙️</span>
           </div>
           <h1
             style={{
@@ -96,7 +98,7 @@ export default function Home() {
               letterSpacing: "-0.5px",
             }}
           >
-            Welcome Back
+            Administrator Login
           </h1>
           <p
             style={{
@@ -108,38 +110,40 @@ export default function Home() {
               marginInline: "auto",
             }}
           >
-            Sign in to your Student Wellness account and continue tracking your
-            wellbeing journey.
+            Access the administrative dashboard to manage student wellness data
+            and system settings.
           </p>
 
-          {/* Administrator Login Button */}
-          <button
-            onClick={() => router.push("/admin/login")}
-            style={{
-              position: "absolute",
-              top: 0,
-              right: 0,
-              padding: "8px 16px",
-              fontSize: "12px",
-              fontWeight: 600,
-              color: "#6b7280",
-              backgroundColor: "transparent",
-              border: "1px solid #d1d5db",
-              borderRadius: "6px",
-              cursor: "pointer",
-              transition: "all 0.2s ease",
-            }}
-            onMouseOver={(e) => {
-              e.currentTarget.style.backgroundColor = "#f9fafb";
-              e.currentTarget.style.borderColor = "#9ca3af";
-            }}
-            onMouseOut={(e) => {
-              e.currentTarget.style.backgroundColor = "transparent";
-              e.currentTarget.style.borderColor = "#d1d5db";
-            }}
-          >
-            Admin Login
-          </button>
+          {/* Back to Student Login */}
+          <Link href="/" legacyBehavior>
+            <a
+              style={{
+                position: "absolute",
+                top: 0,
+                right: 0,
+                padding: "8px 16px",
+                fontSize: "12px",
+                fontWeight: 600,
+                color: "#6b7280",
+                backgroundColor: "transparent",
+                border: "1px solid #d1d5db",
+                borderRadius: "6px",
+                textDecoration: "none",
+                cursor: "pointer",
+                transition: "all 0.2s ease",
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.backgroundColor = "#f9fafb";
+                e.currentTarget.style.borderColor = "#9ca3af";
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.backgroundColor = "transparent";
+                e.currentTarget.style.borderColor = "#d1d5db";
+              }}
+            >
+              Student Login
+            </a>
+          </Link>
         </div>
 
         {/* Form Section */}
@@ -155,13 +159,13 @@ export default function Home() {
                 textAlign: "left",
               }}
             >
-              Email Address
+              Admin Email Address
             </label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@university.edu"
+              placeholder="admin@university.edu"
               style={{
                 width: "100%",
                 padding: "14px 16px",
@@ -173,8 +177,8 @@ export default function Home() {
                 boxSizing: "border-box",
               }}
               onFocus={(e) => {
-                e.target.style.borderColor = "#10b981";
-                e.target.style.boxShadow = "0 0 0 2px rgba(16,185,129,0.2)";
+                e.target.style.borderColor = "#7c3aed";
+                e.target.style.boxShadow = "0 0 0 2px rgba(124,58,237,0.2)";
               }}
               onBlur={(e) => {
                 e.target.style.borderColor = "#e5e7eb";
@@ -201,7 +205,7 @@ export default function Home() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
+              placeholder="Enter admin password"
               style={{
                 width: "100%",
                 padding: "14px 16px",
@@ -213,8 +217,8 @@ export default function Home() {
                 boxSizing: "border-box",
               }}
               onFocus={(e) => {
-                e.target.style.borderColor = "#10b981";
-                e.target.style.boxShadow = "0 0 0 2px rgba(16,185,129,0.2)";
+                e.target.style.borderColor = "#7c3aed";
+                e.target.style.boxShadow = "0 0 0 2px rgba(124,58,237,0.2)";
               }}
               onBlur={(e) => {
                 e.target.style.borderColor = "#e5e7eb";
@@ -233,39 +237,39 @@ export default function Home() {
               fontSize: "16px",
               fontWeight: 600,
               color: "white",
-              backgroundColor: loading ? "#9ca3af" : "#10b981",
+              backgroundColor: loading ? "#9ca3af" : "#7c3aed",
               border: "none",
               borderRadius: "10px",
               cursor: loading ? "not-allowed" : "pointer",
               transition: "all 0.25s ease",
               boxShadow: loading
                 ? "none"
-                : "0 6px 16px rgba(16, 185, 129, 0.3)",
+                : "0 6px 16px rgba(124, 58, 237, 0.3)",
               marginBottom: "0px",
             }}
             onMouseOver={(e) => {
               if (!loading) {
-                e.currentTarget.style.backgroundColor = "#059669";
+                e.currentTarget.style.backgroundColor = "#6d28d9";
                 e.currentTarget.style.transform = "translateY(-1px)";
                 e.currentTarget.style.boxShadow =
-                  "0 8px 20px rgba(16,185,129,0.35)";
+                  "0 8px 20px rgba(124,58,237,0.35)";
               }
             }}
             onMouseOut={(e) => {
               if (!loading) {
-                e.currentTarget.style.backgroundColor = "#10b981";
+                e.currentTarget.style.backgroundColor = "#7c3aed";
                 e.currentTarget.style.transform = "translateY(0)";
                 e.currentTarget.style.boxShadow =
-                  "0 6px 16px rgba(16, 185, 129, 0.3)";
+                  "0 6px 16px rgba(124, 58, 237, 0.3)";
               }
             }}
           >
-            {loading ? "Signing In..." : "Sign In"}
+            {loading ? "Signing In..." : "Admin Sign In"}
           </button>
 
           <a
-            href="/signup"
-            aria-label="Create a new student account"
+            href="/admin/signup"
+            aria-label="Create a new admin account"
             style={{
               fontSize: "13px",
               fontWeight: 400,
@@ -281,7 +285,7 @@ export default function Home() {
             }
             onMouseOut={(e) => (e.currentTarget.style.textDecoration = "none")}
             onFocus={(e) =>
-              (e.currentTarget.style.outline = "2px solid #10b981")
+              (e.currentTarget.style.outline = "2px solid #7c3aed")
             }
             onBlur={(e) => (e.currentTarget.style.outline = "none")}
             onMouseDown={(e) => (e.currentTarget.style.opacity = "0.8")}
@@ -334,8 +338,8 @@ export default function Home() {
               lineHeight: "1.5",
             }}
           >
-            Your wellness journey starts here. Track, reflect, and grow stronger
-            every day 🌱
+            Administrative access for managing student wellness systems and
+            data.
           </p>
         </div>
       </div>

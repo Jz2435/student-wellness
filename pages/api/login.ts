@@ -17,7 +17,7 @@ export default async function handler(
 
   try {
     // Forward to backend
-    const backendUrl = process.env.BACKEND_URL || "http://localhost:8001";
+    const backendUrl = process.env.BACKEND_URL || "http://172.19.192.1:8001";
     const response = await fetch(`${backendUrl}/api/login`, {
       method: "POST",
       headers: {

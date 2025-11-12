@@ -1,10 +1,11 @@
 from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from sqlmodel import SQLModel, create_engine, Session, select
-from models import SelfReport, Student, Notification
+from models import SelfReport, Student, Notification, Alert, Admin
 from pydantic import BaseModel
 import bcrypt
 import secrets
+from datetime import datetime
 
 class SignupRequest(BaseModel):
     name: str
@@ -15,12 +16,15 @@ class LoginRequest(BaseModel):
     email: str
     password: str
 
+class AlertUpdate(BaseModel):
+    status: str
+
 app = FastAPI()
 
 # Enable CORS for localhost:3001 (Next.js default in package.json)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3001"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -75,6 +79,31 @@ async def signup(request: SignupRequest, session: Session = Depends(get_session)
     return {"message": "Account created successfully", "token": token, "user": {"id": str(student.id), "name": student.name, "email": student.email}}
 
 
+@app.post("/api/admin/signup")
+async def admin_signup(request: SignupRequest, session: Session = Depends(get_session)):
+    if not request.name or not request.email or not request.password:
+        raise HTTPException(status_code=400, detail="All fields are required")
+    
+    # Check if email exists
+    existing = session.exec(select(Admin).where(Admin.email == request.email)).first()
+    if existing:
+        raise HTTPException(status_code=400, detail="Email already in use")
+    
+    # Hash password
+    hashed = bcrypt.hashpw(request.password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+    
+    # Create admin
+    admin = Admin(name=request.name, email=request.email, password=hashed)
+    session.add(admin)
+    session.commit()
+    session.refresh(admin)
+    
+    # Generate token
+    token = secrets.token_hex(16)
+    
+    return {"message": "Admin account created successfully", "token": token, "user": {"id": str(admin.id), "name": admin.name, "email": admin.email}}
+
+
 @app.post("/api/login")
 async def login(request: LoginRequest, session: Session = Depends(get_session)):
     if not request.email or not request.password:
@@ -95,6 +124,64 @@ async def create_self_report(report: SelfReport, session: Session = Depends(get_
     session.add(report)
     session.commit()
     session.refresh(report)
+    
+    # Calculate normalized values
+    stress_norm = report.stress_level / 10.0
+    mood_norm = 1.0 if report.mood == "sad" else 0.5 if report.mood == "neutral" else 0.0
+    sleep_norm = 1.0 - min(1.0, report.sleep_hours / 8.0)
+    
+    # Calculate risk score using weighted composite model
+    risk_score = 0.4 * stress_norm + 0.35 * sleep_norm + 0.25 * mood_norm
+    
+    # Check trigger conditions
+    triggered = False
+    condition = ""
+    if risk_score >= 0.75:
+        triggered = True
+        condition = f"risk_score >= 0.75"
+    elif report.stress_level >= 8 and report.sleep_hours < 5:
+        triggered = True
+        condition = f"stress >= 8 and sleep_hours < 5"
+    elif report.mood == "sad" and report.sleep_hours < 6:
+        triggered = True
+        condition = f"mood == 'sad' and sleep_hours < 6"
+    
+    if triggered:
+        # Determine severity
+        if risk_score >= 0.9:
+            severity = "CRITICAL"
+        elif risk_score >= 0.75:
+            severity = "HIGH"
+        elif risk_score >= 0.5:
+            severity = "MEDIUM"
+        else:
+            severity = "LOW"
+        
+        # Create alert
+        alert = Alert(
+            student_id=report.student_id,
+            risk_score=risk_score,
+            severity=severity,
+            condition=condition,
+            status="OPEN"
+        )
+        session.add(alert)
+        session.commit()
+        session.refresh(alert)
+        
+        # Get student name for notification
+        student = session.get(Student, report.student_id)
+        student_name = student.name if student else "Unknown Student"
+        
+        # Create notification
+        notification = Notification(
+            student_id=report.student_id,
+            title="Risk Alert",
+            message=f"Alert for {student_name}: Risk score {risk_score:.2f} triggered by '{condition}' at {alert.triggered_at}. Severity: {severity}. Please review your wellness data."
+        )
+        session.add(notification)
+        session.commit()
+    
     return {"message": "Report submitted successfully", "report_id": report.id}
 
 
@@ -113,6 +200,14 @@ async def get_notifications(student_id: str, session: Session = Depends(get_sess
         select(Notification).where(Notification.student_id == int(student_id)).order_by(Notification.timestamp.desc())
     ).all()
     return notifications
+
+
+@app.get("/api/notifications/{notification_id}")
+async def get_notification(notification_id: int, session: Session = Depends(get_session)):
+    notification = session.get(Notification, notification_id)
+    if not notification:
+        raise HTTPException(status_code=404, detail="Notification not found")
+    return notification
 
 
 @app.put("/api/notifications/{notification_id}/read")
@@ -182,3 +277,24 @@ async def create_sample_notifications(student_id: str, session: Session = Depend
     
     session.commit()
     return {"message": "Sample notifications created"}
+
+
+@app.get("/api/alerts")
+async def get_alerts(session: Session = Depends(get_session)):
+    alerts = session.exec(select(Alert).order_by(Alert.triggered_at.desc())).all()
+    return alerts
+
+
+@app.patch("/api/alerts/{alert_id}")
+async def update_alert_status(alert_id: int, update: AlertUpdate, session: Session = Depends(get_session)):
+    alert = session.get(Alert, alert_id)
+    if not alert:
+        raise HTTPException(status_code=404, detail="Alert not found")
+    alert.status = update.status
+    if update.status == "ACK":
+        alert.ack_at = datetime.utcnow()
+    elif update.status == "RESOLVED":
+        alert.resolved_at = datetime.utcnow()
+    session.commit()
+    session.refresh(alert)
+    return {"message": "Alert status updated", "alert": alert}

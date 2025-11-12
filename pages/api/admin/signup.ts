@@ -17,9 +17,9 @@ export default async function handler(
   }
 
   try {
-    // Forward to backend
+    // Forward to backend admin signup endpoint
     const backendUrl = process.env.BACKEND_URL || "http://172.19.192.1:8001";
-    const response = await fetch(`${backendUrl}/api/signup`, {
+    const response = await fetch(`${backendUrl}/api/admin/signup`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -34,7 +34,7 @@ export default async function handler(
     } else {
       return res
         .status(response.status)
-        .json({ error: data.detail || "Signup failed" });
+        .json({ error: data.detail || "Admin signup failed" });
     }
   } catch (error) {
     console.error("Error forwarding to backend:", error);
