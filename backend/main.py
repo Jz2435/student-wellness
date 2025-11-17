@@ -298,3 +298,9 @@ async def update_alert_status(alert_id: int, update: AlertUpdate, session: Sessi
     session.commit()
     session.refresh(alert)
     return {"message": "Alert status updated", "alert": alert}
+
+@app.get("/api/students")
+async def get_students(session: Session = Depends(get_session)):
+    students = session.exec(select(Student)).all()
+    # Return students without password field
+    return [{"id": s.id, "name": s.name, "email": s.email} for s in students]
