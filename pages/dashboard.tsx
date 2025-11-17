@@ -148,10 +148,10 @@ export default function Dashboard() {
   return (
     <main
       style={{
-        padding: "40px 60px",
-        maxWidth: 1200,
+        padding: "20px",
+        maxWidth: 1400,
         margin: "0 auto",
-        backgroundColor: "#f9fafb",
+        backgroundColor: "#f3f4f6",
         minHeight: "100vh",
       }}
     >
@@ -159,48 +159,70 @@ export default function Dashboard() {
         style={{
           display: "flex",
           justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: 40,
+          alignItems: "flex-start",
+          marginBottom: 32,
+          flexWrap: "wrap",
+          gap: "20px",
+          backgroundColor: "#fff",
+          padding: "24px",
+          borderRadius: "12px",
+          boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
         }}
       >
-        <div>
+        <div style={{ flex: "1 1 300px" }}>
           <h1
             style={{
-              fontSize: "2.25rem",
+              fontSize: "2rem",
               fontWeight: 700,
               color: "#1e3a8a",
               marginBottom: 8,
+              lineHeight: 1.2,
             }}
           >
-            Dashboard
+            Welcome, {user.name}
           </h1>
-          <p style={{ color: "#4b5563" }}>
-            Signed in as: <strong>{user.name}</strong> ({user.email})
+          <p style={{ color: "#6b7280", fontSize: "14px", margin: 0 }}>
+            {user.email}
           </p>
         </div>
 
-        <div style={{ display: "flex", gap: "12px" }}>
+        <div
+          style={{
+            display: "flex",
+            gap: "12px",
+            alignItems: "center",
+            flexWrap: "wrap",
+          }}
+        >
           <NotificationBell />
           <Link href="/report" legacyBehavior>
             <a
               style={{
-                padding: "10px 20px",
+                padding: "12px 24px",
                 backgroundColor: "#2563eb",
                 color: "#fff",
-                borderRadius: 6,
+                borderRadius: 8,
                 fontWeight: 600,
                 textDecoration: "none",
-                boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
-                transition: "background-color 0.2s",
+                boxShadow: "0 2px 8px rgba(37,99,235,0.3)",
+                transition: "all 0.2s",
+                display: "inline-block",
+                fontSize: "15px",
               }}
-              onMouseOver={(e) =>
-                (e.currentTarget.style.backgroundColor = "#1d4ed8")
-              }
-              onMouseOut={(e) =>
-                (e.currentTarget.style.backgroundColor = "#2563eb")
-              }
+              onMouseOver={(e) => {
+                e.currentTarget.style.backgroundColor = "#1d4ed8";
+                e.currentTarget.style.transform = "translateY(-1px)";
+                e.currentTarget.style.boxShadow =
+                  "0 4px 12px rgba(37,99,235,0.4)";
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.backgroundColor = "#2563eb";
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.boxShadow =
+                  "0 2px 8px rgba(37,99,235,0.3)";
+              }}
             >
-              Submit Daily Report
+              📝 Submit Daily Report
             </a>
           </Link>
           <button
@@ -209,12 +231,23 @@ export default function Dashboard() {
               router.push("/");
             }}
             style={{
-              padding: "10px 20px",
-              backgroundColor: "#e5e7eb",
+              padding: "12px 20px",
+              backgroundColor: "#fff",
               color: "#374151",
-              borderRadius: 6,
+              border: "2px solid #e5e7eb",
+              borderRadius: 8,
               fontWeight: 600,
               cursor: "pointer",
+              transition: "all 0.2s",
+              fontSize: "15px",
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.backgroundColor = "#f9fafb";
+              e.currentTarget.style.borderColor = "#d1d5db";
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.backgroundColor = "#fff";
+              e.currentTarget.style.borderColor = "#e5e7eb";
             }}
           >
             Sign out
@@ -224,24 +257,170 @@ export default function Dashboard() {
 
       {reports.length > 0 && (
         <section>
-          <h2
+          {/* Quick Stats Section */}
+          <div
             style={{
-              fontSize: "1.5rem",
-              fontWeight: 700,
-              color: "#111827",
-              marginBottom: 24,
-              borderBottom: "2px solid #e5e7eb",
-              paddingBottom: 8,
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+              gap: "16px",
+              marginBottom: 32,
             }}
           >
-            Health Trends
+            <div
+              style={{
+                backgroundColor: "#fff",
+                padding: "20px",
+                borderRadius: "12px",
+                boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+                borderLeft: "4px solid #ef4444",
+              }}
+            >
+              <p
+                style={{
+                  fontSize: "13px",
+                  color: "#6b7280",
+                  marginBottom: 8,
+                  fontWeight: 600,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.5px",
+                }}
+              >
+                Latest Stress
+              </p>
+              <p
+                style={{
+                  fontSize: "28px",
+                  fontWeight: 700,
+                  color: "#ef4444",
+                  margin: 0,
+                }}
+              >
+                {sortedReports[sortedReports.length - 1]?.stress_level || "N/A"}
+                <span style={{ fontSize: "16px", color: "#6b7280" }}>/10</span>
+              </p>
+            </div>
+
+            <div
+              style={{
+                backgroundColor: "#fff",
+                padding: "20px",
+                borderRadius: "12px",
+                boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+                borderLeft: "4px solid #3b82f6",
+              }}
+            >
+              <p
+                style={{
+                  fontSize: "13px",
+                  color: "#6b7280",
+                  marginBottom: 8,
+                  fontWeight: 600,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.5px",
+                }}
+              >
+                Latest Mood
+              </p>
+              <p
+                style={{
+                  fontSize: "28px",
+                  fontWeight: 700,
+                  color: "#3b82f6",
+                  margin: 0,
+                  textTransform: "capitalize",
+                }}
+              >
+                {sortedReports[sortedReports.length - 1]?.mood || "N/A"}
+              </p>
+            </div>
+
+            <div
+              style={{
+                backgroundColor: "#fff",
+                padding: "20px",
+                borderRadius: "12px",
+                boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+                borderLeft: "4px solid #10b981",
+              }}
+            >
+              <p
+                style={{
+                  fontSize: "13px",
+                  color: "#6b7280",
+                  marginBottom: 8,
+                  fontWeight: 600,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.5px",
+                }}
+              >
+                Latest Sleep
+              </p>
+              <p
+                style={{
+                  fontSize: "28px",
+                  fontWeight: 700,
+                  color: "#10b981",
+                  margin: 0,
+                }}
+              >
+                {sortedReports[sortedReports.length - 1]?.sleep_hours || "N/A"}
+                <span style={{ fontSize: "16px", color: "#6b7280" }}> hrs</span>
+              </p>
+            </div>
+
+            <div
+              style={{
+                backgroundColor: "#fff",
+                padding: "20px",
+                borderRadius: "12px",
+                boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+                borderLeft: "4px solid #8b5cf6",
+              }}
+            >
+              <p
+                style={{
+                  fontSize: "13px",
+                  color: "#6b7280",
+                  marginBottom: 8,
+                  fontWeight: 600,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.5px",
+                }}
+              >
+                Total Reports
+              </p>
+              <p
+                style={{
+                  fontSize: "28px",
+                  fontWeight: 700,
+                  color: "#8b5cf6",
+                  margin: 0,
+                }}
+              >
+                {reports.length}
+              </p>
+            </div>
+          </div>
+
+          <h2
+            style={{
+              fontSize: "1.25rem",
+              fontWeight: 700,
+              color: "#111827",
+              marginBottom: 20,
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+            }}
+          >
+            📊 Your Health Trends
           </h2>
 
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "1fr",
-              gap: 60,
+              gridTemplateColumns: "repeat(auto-fit, minmax(350px, 1fr))",
+              gap: 24,
             }}
           >
             <Link href="/trends/stress" legacyBehavior>
@@ -249,56 +428,63 @@ export default function Dashboard() {
                 style={{
                   display: "block",
                   backgroundColor: "#fff",
-                  padding: 24,
+                  padding: 20,
                   borderRadius: 12,
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+                  boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
                   textDecoration: "none",
                   color: "inherit",
                   cursor: "pointer",
                   transition: "all 0.2s ease",
                   position: "relative",
+                  border: "1px solid #f3f4f6",
                 }}
                 onMouseOver={(e) => {
-                  e.currentTarget.style.transform = "translateY(-2px)";
+                  e.currentTarget.style.transform = "translateY(-4px)";
                   e.currentTarget.style.boxShadow =
-                    "0 8px 24px rgba(0,0,0,0.1)";
+                    "0 8px 20px rgba(0,0,0,0.12)";
+                  e.currentTarget.style.borderColor = "#ef4444";
                 }}
                 onMouseOut={(e) => {
                   e.currentTarget.style.transform = "translateY(0)";
-                  e.currentTarget.style.boxShadow =
-                    "0 4px 12px rgba(0,0,0,0.05)";
+                  e.currentTarget.style.boxShadow = "0 1px 3px rgba(0,0,0,0.1)";
+                  e.currentTarget.style.borderColor = "#f3f4f6";
                 }}
                 aria-label="Open Stress trend details"
               >
                 <div
                   style={{
-                    position: "absolute",
-                    top: 16,
-                    right: 16,
-                    color: "#6b7280",
-                    fontSize: "14px",
-                    fontWeight: 500,
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: 12,
                   }}
                 >
-                  View details →
+                  <h3
+                    style={{
+                      fontSize: "1rem",
+                      fontWeight: 600,
+                      color: "#111827",
+                      margin: 0,
+                    }}
+                  >
+                    😰 Stress Level
+                  </h3>
+                  <span
+                    style={{
+                      color: "#ef4444",
+                      fontSize: "13px",
+                      fontWeight: 600,
+                    }}
+                  >
+                    View →
+                  </span>
                 </div>
-                <h3
-                  style={{
-                    fontSize: "1.125rem",
-                    fontWeight: 600,
-                    color: "#374151",
-                    marginBottom: 16,
-                    textAlign: "center",
-                  }}
-                >
-                  Stress Level Trend
-                </h3>
                 <Line
                   options={{
                     ...chartOptions,
                     plugins: {
                       ...chartOptions.plugins,
-                      title: { display: true, text: "Stress Level Over Time" },
+                      title: { display: false },
                     },
                   }}
                   data={stressData}
@@ -311,59 +497,63 @@ export default function Dashboard() {
                 style={{
                   display: "block",
                   backgroundColor: "#fff",
-                  padding: 24,
+                  padding: 20,
                   borderRadius: 12,
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+                  boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
                   textDecoration: "none",
                   color: "inherit",
                   cursor: "pointer",
                   transition: "all 0.2s ease",
                   position: "relative",
+                  border: "1px solid #f3f4f6",
                 }}
                 onMouseOver={(e) => {
-                  e.currentTarget.style.transform = "translateY(-2px)";
+                  e.currentTarget.style.transform = "translateY(-4px)";
                   e.currentTarget.style.boxShadow =
-                    "0 8px 24px rgba(0,0,0,0.1)";
+                    "0 8px 20px rgba(0,0,0,0.12)";
+                  e.currentTarget.style.borderColor = "#3b82f6";
                 }}
                 onMouseOut={(e) => {
                   e.currentTarget.style.transform = "translateY(0)";
-                  e.currentTarget.style.boxShadow =
-                    "0 4px 12px rgba(0,0,0,0.05)";
+                  e.currentTarget.style.boxShadow = "0 1px 3px rgba(0,0,0,0.1)";
+                  e.currentTarget.style.borderColor = "#f3f4f6";
                 }}
                 aria-label="Open Mood trend details"
               >
                 <div
                   style={{
-                    position: "absolute",
-                    top: 16,
-                    right: 16,
-                    color: "#6b7280",
-                    fontSize: "14px",
-                    fontWeight: 500,
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: 12,
                   }}
                 >
-                  View details →
+                  <h3
+                    style={{
+                      fontSize: "1rem",
+                      fontWeight: 600,
+                      color: "#111827",
+                      margin: 0,
+                    }}
+                  >
+                    😊 Mood Tracker
+                  </h3>
+                  <span
+                    style={{
+                      color: "#3b82f6",
+                      fontSize: "13px",
+                      fontWeight: 600,
+                    }}
+                  >
+                    View →
+                  </span>
                 </div>
-                <h3
-                  style={{
-                    fontSize: "1.125rem",
-                    fontWeight: 600,
-                    color: "#374151",
-                    marginBottom: 16,
-                    textAlign: "center",
-                  }}
-                >
-                  Mood Trend
-                </h3>
                 <Line
                   options={{
                     ...chartOptions,
                     plugins: {
                       ...chartOptions.plugins,
-                      title: {
-                        display: true,
-                        text: "Mood Over Time (1=Sad, 2=Neutral, 3=Happy)",
-                      },
+                      title: { display: false },
                     },
                   }}
                   data={moodData}
@@ -376,56 +566,63 @@ export default function Dashboard() {
                 style={{
                   display: "block",
                   backgroundColor: "#fff",
-                  padding: 24,
+                  padding: 20,
                   borderRadius: 12,
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+                  boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
                   textDecoration: "none",
                   color: "inherit",
                   cursor: "pointer",
                   transition: "all 0.2s ease",
                   position: "relative",
+                  border: "1px solid #f3f4f6",
                 }}
                 onMouseOver={(e) => {
-                  e.currentTarget.style.transform = "translateY(-2px)";
+                  e.currentTarget.style.transform = "translateY(-4px)";
                   e.currentTarget.style.boxShadow =
-                    "0 8px 24px rgba(0,0,0,0.1)";
+                    "0 8px 20px rgba(0,0,0,0.12)";
+                  e.currentTarget.style.borderColor = "#10b981";
                 }}
                 onMouseOut={(e) => {
                   e.currentTarget.style.transform = "translateY(0)";
-                  e.currentTarget.style.boxShadow =
-                    "0 4px 12px rgba(0,0,0,0.05)";
+                  e.currentTarget.style.boxShadow = "0 1px 3px rgba(0,0,0,0.1)";
+                  e.currentTarget.style.borderColor = "#f3f4f6";
                 }}
                 aria-label="Open Sleep trend details"
               >
                 <div
                   style={{
-                    position: "absolute",
-                    top: 16,
-                    right: 16,
-                    color: "#6b7280",
-                    fontSize: "14px",
-                    fontWeight: 500,
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: 12,
                   }}
                 >
-                  View details →
+                  <h3
+                    style={{
+                      fontSize: "1rem",
+                      fontWeight: 600,
+                      color: "#111827",
+                      margin: 0,
+                    }}
+                  >
+                    😴 Sleep Hours
+                  </h3>
+                  <span
+                    style={{
+                      color: "#10b981",
+                      fontSize: "13px",
+                      fontWeight: 600,
+                    }}
+                  >
+                    View →
+                  </span>
                 </div>
-                <h3
-                  style={{
-                    fontSize: "1.125rem",
-                    fontWeight: 600,
-                    color: "#374151",
-                    marginBottom: 16,
-                    textAlign: "center",
-                  }}
-                >
-                  Sleep Hours Trend
-                </h3>
                 <Line
                   options={{
                     ...chartOptions,
                     plugins: {
                       ...chartOptions.plugins,
-                      title: { display: true, text: "Sleep Hours Over Time" },
+                      title: { display: false },
                     },
                   }}
                   data={sleepData}
@@ -437,9 +634,66 @@ export default function Dashboard() {
       )}
 
       {reports.length === 0 && (
-        <p style={{ marginTop: 20, color: "#6b7280", fontStyle: "italic" }}>
-          No reports submitted yet. Submit your first report to see trends!
-        </p>
+        <div
+          style={{
+            textAlign: "center",
+            padding: "60px 20px",
+            backgroundColor: "#fff",
+            borderRadius: "12px",
+            boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+          }}
+        >
+          <div style={{ fontSize: "64px", marginBottom: "20px" }}>📊</div>
+          <h2
+            style={{
+              fontSize: "1.5rem",
+              fontWeight: 600,
+              color: "#111827",
+              marginBottom: "12px",
+            }}
+          >
+            No Reports Yet
+          </h2>
+          <p
+            style={{
+              color: "#6b7280",
+              fontSize: "16px",
+              marginBottom: "24px",
+              maxWidth: "500px",
+              margin: "0 auto 24px",
+              lineHeight: 1.6,
+            }}
+          >
+            Start tracking your wellness journey by submitting your first daily
+            report. You'll be able to view trends and insights here.
+          </p>
+          <Link href="/report" legacyBehavior>
+            <a
+              style={{
+                padding: "12px 32px",
+                backgroundColor: "#2563eb",
+                color: "#fff",
+                borderRadius: 8,
+                fontWeight: 600,
+                textDecoration: "none",
+                boxShadow: "0 2px 8px rgba(37,99,235,0.3)",
+                transition: "all 0.2s",
+                display: "inline-block",
+                fontSize: "15px",
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.backgroundColor = "#1d4ed8";
+                e.currentTarget.style.transform = "translateY(-2px)";
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.backgroundColor = "#2563eb";
+                e.currentTarget.style.transform = "translateY(0)";
+              }}
+            >
+              Submit Your First Report
+            </a>
+          </Link>
+        </div>
       )}
     </main>
   );
