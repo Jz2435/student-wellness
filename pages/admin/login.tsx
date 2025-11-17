@@ -37,10 +37,10 @@ export default function AdminLogin() {
       if (!res.ok) throw new Error(data?.error || "Login failed");
       if (!data.token || !data.user) throw new Error("Invalid login response");
 
-      // TODO: Check if user is admin; for now, assume admin login
-      // In production, add admin role check
-      alert("Admin login successful! Redirecting to admin dashboard...");
-      router.push("/admin/dashboard"); // TODO: Create admin dashboard
+      // Redirect to admin dashboard
+      setTimeout(() => {
+        router.push("/admin/dashboard");
+      }, 100);
     } catch (e: any) {
       setError(e?.message || "Login failed");
       setLoading(false);

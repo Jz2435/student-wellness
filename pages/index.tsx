@@ -37,8 +37,13 @@ export default function Home() {
       if (!res.ok) throw new Error(data?.error || "Login failed");
       if (!data.token || !data.user) throw new Error("Invalid login response");
 
+      // Login and wait a tick to ensure state is persisted
       login(data.token, data.user);
-      router.push("/dashboard");
+
+      // Use setTimeout to ensure localStorage is updated before redirect
+      setTimeout(() => {
+        router.push("/dashboard");
+      }, 100);
     } catch (e: any) {
       setError(e?.message || "Login failed");
       setLoading(false);

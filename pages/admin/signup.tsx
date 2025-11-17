@@ -77,7 +77,11 @@ export default function AdminSignup() {
       // Store admin token and redirect to admin dashboard
       localStorage.setItem("adminToken", data.token);
       localStorage.setItem("adminUser", JSON.stringify(data.user));
-      router.push("/admin/dashboard");
+
+      // Use setTimeout to ensure localStorage is updated before redirect
+      setTimeout(() => {
+        router.push("/admin/dashboard");
+      }, 100);
     } catch (e: any) {
       setError(e?.message || "Signup failed");
       setLoading(false);
