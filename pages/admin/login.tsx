@@ -1,25 +1,39 @@
 import React, { useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { FormInput } from "../../components/FormInput";
 
 export default function AdminLogin() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<{ [key: string]: string }>({});
+  const [success, setSuccess] = useState(false);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const validateForm = () => {
+    const errors: { [key: string]: string } = {};
+
+    if (!email || email.indexOf("@") === -1) {
+      errors.email = "Please enter a valid email address";
+    }
+
+    if (!password) {
+      errors.password = "Please enter your password";
+    }
+
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   const handleSignIn = async (e?: React.FormEvent) => {
     e?.preventDefault();
     setError(null);
+    setFieldErrors({});
 
-    if (!email || email.indexOf("@") === -1) {
-      setError("Please enter a valid email address.");
-      return;
-    }
-    if (!password) {
-      setError("Please enter your password.");
+    if (!validateForm()) {
       return;
     }
 
@@ -36,6 +50,11 @@ export default function AdminLogin() {
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || "Login failed");
       if (!data.token || !data.user) throw new Error("Invalid login response");
+
+      // Store admin credentials
+      localStorage.setItem("adminToken", data.token);
+      localStorage.setItem("adminUser", JSON.stringify(data.user));
+      setSuccess(true);
 
       // Redirect to admin dashboard
       setTimeout(() => {
@@ -61,6 +80,13 @@ export default function AdminLogin() {
           '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
       }}
     >
+      <style jsx>{`
+        @keyframes spin {
+          to {
+            transform: rotate(360deg);
+          }
+        }
+      `}</style>
       <div
         style={{
           backgroundColor: "white",
@@ -148,107 +174,85 @@ export default function AdminLogin() {
 
         {/* Form Section */}
         <form onSubmit={handleSignIn} style={{ width: "100%" }}>
-          <div style={{ marginBottom: "28px" }}>
-            <label
-              style={{
-                display: "block",
-                fontSize: "14px",
-                fontWeight: 600,
-                color: "#374151",
-                marginBottom: "10px",
-                textAlign: "left",
-              }}
-            >
-              Admin Email Address
-            </label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="admin@university.edu"
-              style={{
-                width: "100%",
-                padding: "14px 16px",
-                fontSize: "15px",
-                border: "2px solid #e5e7eb",
-                borderRadius: "10px",
-                outline: "none",
-                transition: "border-color 0.2s ease, box-shadow 0.2s ease",
-                boxSizing: "border-box",
-              }}
-              onFocus={(e) => {
-                e.target.style.borderColor = "#7c3aed";
-                e.target.style.boxShadow = "0 0 0 2px rgba(124,58,237,0.2)";
-              }}
-              onBlur={(e) => {
-                e.target.style.borderColor = "#e5e7eb";
-                e.target.style.boxShadow = "none";
-              }}
-              required
-            />
-          </div>
+          <FormInput
+            label="Admin Email Address"
+            type="email"
+            value={email}
+            onChange={setEmail}
+            placeholder="admin@university.edu"
+            error={fieldErrors.email}
+            required
+            accentColor="#7c3aed"
+            autoComplete="email"
+          />
 
-          <div style={{ marginBottom: "36px" }}>
-            <label
+          <FormInput
+            label="Password"
+            type="password"
+            value={password}
+            onChange={setPassword}
+            placeholder="Enter admin password"
+            error={fieldErrors.password}
+            required
+            showPasswordToggle
+            accentColor="#7c3aed"
+            autoComplete="current-password"
+          />
+
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              marginBottom: "24px",
+              marginTop: "-12px",
+            }}
+          >
+            <a
+              href="/admin/forgot-password"
               style={{
-                display: "block",
-                fontSize: "14px",
-                fontWeight: 600,
-                color: "#374151",
-                marginBottom: "10px",
-                textAlign: "left",
+                fontSize: "13px",
+                color: "#6b7280",
+                textDecoration: "none",
+                fontWeight: 500,
+                transition: "color 0.2s ease",
               }}
+              onMouseOver={(e) => (e.currentTarget.style.color = "#7c3aed")}
+              onMouseOut={(e) => (e.currentTarget.style.color = "#6b7280")}
             >
-              Password
-            </label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter admin password"
-              style={{
-                width: "100%",
-                padding: "14px 16px",
-                fontSize: "15px",
-                border: "2px solid #e5e7eb",
-                borderRadius: "10px",
-                outline: "none",
-                transition: "border-color 0.2s ease, box-shadow 0.2s ease",
-                boxSizing: "border-box",
-              }}
-              onFocus={(e) => {
-                e.target.style.borderColor = "#7c3aed";
-                e.target.style.boxShadow = "0 0 0 2px rgba(124,58,237,0.2)";
-              }}
-              onBlur={(e) => {
-                e.target.style.borderColor = "#e5e7eb";
-                e.target.style.boxShadow = "none";
-              }}
-              required
-            />
+              Forgot password?
+            </a>
           </div>
 
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || success}
             style={{
               width: "100%",
               padding: "14px 0",
               fontSize: "16px",
               fontWeight: 600,
               color: "white",
-              backgroundColor: loading ? "#9ca3af" : "#7c3aed",
+              backgroundColor: success
+                ? "#7c3aed"
+                : loading
+                ? "#9ca3af"
+                : "#7c3aed",
               border: "none",
               borderRadius: "10px",
-              cursor: loading ? "not-allowed" : "pointer",
+              cursor: loading || success ? "not-allowed" : "pointer",
               transition: "all 0.25s ease",
-              boxShadow: loading
-                ? "none"
-                : "0 6px 16px rgba(124, 58, 237, 0.3)",
+              boxShadow:
+                loading || success
+                  ? "none"
+                  : "0 6px 16px rgba(124, 58, 237, 0.3)",
               marginBottom: "0px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "8px",
             }}
             onMouseOver={(e) => {
-              if (!loading) {
+              if (!loading && !success) {
                 e.currentTarget.style.backgroundColor = "#6d28d9";
                 e.currentTarget.style.transform = "translateY(-1px)";
                 e.currentTarget.style.boxShadow =
@@ -256,15 +260,37 @@ export default function AdminLogin() {
               }
             }}
             onMouseOut={(e) => {
-              if (!loading) {
+              if (!loading && !success) {
                 e.currentTarget.style.backgroundColor = "#7c3aed";
                 e.currentTarget.style.transform = "translateY(0)";
                 e.currentTarget.style.boxShadow =
                   "0 6px 16px rgba(124, 58, 237, 0.3)";
               }
             }}
+            aria-live="polite"
           >
-            {loading ? "Signing In..." : "Admin Sign In"}
+            {success ? (
+              <>
+                <span>✓</span> Success! Redirecting...
+              </>
+            ) : loading ? (
+              <>
+                <span
+                  style={{
+                    display: "inline-block",
+                    width: "16px",
+                    height: "16px",
+                    border: "2px solid rgba(255,255,255,0.3)",
+                    borderTopColor: "white",
+                    borderRadius: "50%",
+                    animation: "spin 0.8s linear infinite",
+                  }}
+                />
+                Signing In...
+              </>
+            ) : (
+              "Admin Sign In"
+            )}
           </button>
 
           <a

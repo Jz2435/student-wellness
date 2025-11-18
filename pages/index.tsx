@@ -1,26 +1,40 @@
 import React, { useState } from "react";
 import { useRouter } from "next/router";
 import { useAuth } from "../hooks/useAuth";
+import { FormInput } from "../components/FormInput";
 
 export default function Home() {
   const router = useRouter();
   const { login } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<{ [key: string]: string }>({});
+  const [success, setSuccess] = useState(false);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const validateForm = () => {
+    const errors: { [key: string]: string } = {};
+
+    if (!email || email.indexOf("@") === -1) {
+      errors.email = "Please enter a valid email address";
+    }
+
+    if (!password) {
+      errors.password = "Please enter your password";
+    }
+
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   const handleSignIn = async (e?: React.FormEvent) => {
     e?.preventDefault();
     setError(null);
+    setFieldErrors({});
 
-    if (!email || email.indexOf("@") === -1) {
-      setError("Please enter a valid email address.");
-      return;
-    }
-    if (!password) {
-      setError("Please enter your password.");
+    if (!validateForm()) {
       return;
     }
 
@@ -37,8 +51,9 @@ export default function Home() {
       if (!res.ok) throw new Error(data?.error || "Login failed");
       if (!data.token || !data.user) throw new Error("Invalid login response");
 
-      // Login and wait a tick to ensure state is persisted
+      // Login and show success message
       login(data.token, data.user);
+      setSuccess(true);
 
       // Use setTimeout to ensure localStorage is updated before redirect
       setTimeout(() => {
@@ -64,6 +79,13 @@ export default function Home() {
           '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
       }}
     >
+      <style jsx>{`
+        @keyframes spin {
+          to {
+            transform: rotate(360deg);
+          }
+        }
+      `}</style>
       <div
         style={{
           backgroundColor: "white",
@@ -149,107 +171,85 @@ export default function Home() {
 
         {/* Form Section */}
         <form onSubmit={handleSignIn} style={{ width: "100%" }}>
-          <div style={{ marginBottom: "28px" }}>
-            <label
-              style={{
-                display: "block",
-                fontSize: "14px",
-                fontWeight: 600,
-                color: "#374151",
-                marginBottom: "10px",
-                textAlign: "left",
-              }}
-            >
-              Email Address
-            </label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@university.edu"
-              style={{
-                width: "100%",
-                padding: "14px 16px",
-                fontSize: "15px",
-                border: "2px solid #e5e7eb",
-                borderRadius: "10px",
-                outline: "none",
-                transition: "border-color 0.2s ease, box-shadow 0.2s ease",
-                boxSizing: "border-box",
-              }}
-              onFocus={(e) => {
-                e.target.style.borderColor = "#10b981";
-                e.target.style.boxShadow = "0 0 0 2px rgba(16,185,129,0.2)";
-              }}
-              onBlur={(e) => {
-                e.target.style.borderColor = "#e5e7eb";
-                e.target.style.boxShadow = "none";
-              }}
-              required
-            />
-          </div>
+          <FormInput
+            label="Email Address"
+            type="email"
+            value={email}
+            onChange={setEmail}
+            placeholder="you@university.edu"
+            error={fieldErrors.email}
+            required
+            accentColor="#10b981"
+            autoComplete="email"
+          />
 
-          <div style={{ marginBottom: "36px" }}>
-            <label
+          <FormInput
+            label="Password"
+            type="password"
+            value={password}
+            onChange={setPassword}
+            placeholder="Enter your password"
+            error={fieldErrors.password}
+            required
+            showPasswordToggle
+            accentColor="#10b981"
+            autoComplete="current-password"
+          />
+
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              marginBottom: "24px",
+              marginTop: "-12px",
+            }}
+          >
+            <a
+              href="/forgot-password"
               style={{
-                display: "block",
-                fontSize: "14px",
-                fontWeight: 600,
-                color: "#374151",
-                marginBottom: "10px",
-                textAlign: "left",
+                fontSize: "13px",
+                color: "#6b7280",
+                textDecoration: "none",
+                fontWeight: 500,
+                transition: "color 0.2s ease",
               }}
+              onMouseOver={(e) => (e.currentTarget.style.color = "#10b981")}
+              onMouseOut={(e) => (e.currentTarget.style.color = "#6b7280")}
             >
-              Password
-            </label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
-              style={{
-                width: "100%",
-                padding: "14px 16px",
-                fontSize: "15px",
-                border: "2px solid #e5e7eb",
-                borderRadius: "10px",
-                outline: "none",
-                transition: "border-color 0.2s ease, box-shadow 0.2s ease",
-                boxSizing: "border-box",
-              }}
-              onFocus={(e) => {
-                e.target.style.borderColor = "#10b981";
-                e.target.style.boxShadow = "0 0 0 2px rgba(16,185,129,0.2)";
-              }}
-              onBlur={(e) => {
-                e.target.style.borderColor = "#e5e7eb";
-                e.target.style.boxShadow = "none";
-              }}
-              required
-            />
+              Forgot password?
+            </a>
           </div>
 
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || success}
             style={{
               width: "100%",
               padding: "14px 0",
               fontSize: "16px",
               fontWeight: 600,
               color: "white",
-              backgroundColor: loading ? "#9ca3af" : "#10b981",
+              backgroundColor: success
+                ? "#10b981"
+                : loading
+                ? "#9ca3af"
+                : "#10b981",
               border: "none",
               borderRadius: "10px",
-              cursor: loading ? "not-allowed" : "pointer",
+              cursor: loading || success ? "not-allowed" : "pointer",
               transition: "all 0.25s ease",
-              boxShadow: loading
-                ? "none"
-                : "0 6px 16px rgba(16, 185, 129, 0.3)",
+              boxShadow:
+                loading || success
+                  ? "none"
+                  : "0 6px 16px rgba(16, 185, 129, 0.3)",
               marginBottom: "0px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "8px",
             }}
             onMouseOver={(e) => {
-              if (!loading) {
+              if (!loading && !success) {
                 e.currentTarget.style.backgroundColor = "#059669";
                 e.currentTarget.style.transform = "translateY(-1px)";
                 e.currentTarget.style.boxShadow =
@@ -257,15 +257,37 @@ export default function Home() {
               }
             }}
             onMouseOut={(e) => {
-              if (!loading) {
+              if (!loading && !success) {
                 e.currentTarget.style.backgroundColor = "#10b981";
                 e.currentTarget.style.transform = "translateY(0)";
                 e.currentTarget.style.boxShadow =
                   "0 6px 16px rgba(16, 185, 129, 0.3)";
               }
             }}
+            aria-live="polite"
           >
-            {loading ? "Signing In..." : "Sign In"}
+            {success ? (
+              <>
+                <span>✓</span> Success! Redirecting...
+              </>
+            ) : loading ? (
+              <>
+                <span
+                  style={{
+                    display: "inline-block",
+                    width: "16px",
+                    height: "16px",
+                    border: "2px solid rgba(255,255,255,0.3)",
+                    borderTopColor: "white",
+                    borderRadius: "50%",
+                    animation: "spin 0.8s linear infinite",
+                  }}
+                />
+                Signing In...
+              </>
+            ) : (
+              "Sign In"
+            )}
           </button>
 
           <a
