@@ -119,6 +119,21 @@ async def login(request: LoginRequest, session: Session = Depends(get_session)):
     return {"token": token, "user": {"id": str(student.id), "name": student.name, "email": student.email}}
 
 
+@app.post("/api/admin/login")
+async def admin_login(request: LoginRequest, session: Session = Depends(get_session)):
+    if not request.email or not request.password:
+        raise HTTPException(status_code=400, detail="Email and password are required")
+    
+    admin = session.exec(select(Admin).where(Admin.email == request.email)).first()
+    if not admin or not bcrypt.checkpw(request.password.encode('utf-8'), admin.password.encode('utf-8')):
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+    
+    # Generate token
+    token = secrets.token_hex(16)
+    
+    return {"token": token, "user": {"id": str(admin.id), "name": admin.name, "email": admin.email}}
+
+
 @app.post("/api/self-report")
 async def create_self_report(report: SelfReport, session: Session = Depends(get_session)):
     session.add(report)

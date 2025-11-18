@@ -40,8 +40,8 @@ export default function AdminLogin() {
     setLoading(true);
 
     try {
-      // For now, use the same login API; in production, this would be admin-specific
-      const res = await fetch("/api/login", {
+      // Use admin-specific login API
+      const res = await fetch("/api/admin/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
