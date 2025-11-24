@@ -295,8 +295,14 @@ async def create_sample_notifications(student_id: str, session: Session = Depend
 
 
 @app.get("/api/alerts")
-async def get_alerts(session: Session = Depends(get_session)):
-    alerts = session.exec(select(Alert).order_by(Alert.triggered_at.desc())).all()
+async def get_alerts(student_id: str = None, session: Session = Depends(get_session)):
+    if student_id:
+        alerts = session.exec(
+            select(Alert).where(Alert.student_id == int(student_id)).order_by(Alert.triggered_at.desc())
+        ).all()
+    else:
+        # If no student_id provided, return all alerts (for admin use)
+        alerts = session.exec(select(Alert).order_by(Alert.triggered_at.desc())).all()
     return alerts
 
 

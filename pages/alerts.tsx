@@ -30,7 +30,9 @@ export default function Alerts() {
 
   const fetchAlerts = async () => {
     try {
-      const res = await fetch("http://localhost:8001/api/alerts");
+      const res = await fetch(
+        `http://localhost:8001/api/alerts?student_id=${user?.id}`
+      );
       const data = await res.json();
       setAlerts(data);
     } catch (error) {
