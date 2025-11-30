@@ -40,19 +40,6 @@ export default function Alerts() {
     }
   };
 
-  const updateStatus = async (id: number, status: string) => {
-    try {
-      await fetch(`http://localhost:8000/api/alerts/${id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status }),
-      });
-      fetchAlerts(); // Refresh the list
-    } catch (error) {
-      console.error("Failed to update alert:", error);
-    }
-  };
-
   if (!user) return <p>Redirecting...</p>;
 
   return (
@@ -187,56 +174,6 @@ export default function Alerts() {
                       Student ID: {alert.student_id} | Risk Score:{" "}
                       {alert.risk_score.toFixed(2)}
                     </p>
-                  </div>
-                  <div style={{ display: "flex", gap: "8px" }}>
-                    {alert.status === "OPEN" && (
-                      <button
-                        onClick={() => updateStatus(alert.id, "ACK")}
-                        style={{
-                          padding: "6px 12px",
-                          backgroundColor: "#f59e0b",
-                          color: "#fff",
-                          border: "none",
-                          borderRadius: "6px",
-                          fontSize: "14px",
-                          fontWeight: 500,
-                          cursor: "pointer",
-                          transition: "background-color 0.2s",
-                        }}
-                        onMouseOver={(e) =>
-                          (e.currentTarget.style.backgroundColor = "#d97706")
-                        }
-                        onMouseOut={(e) =>
-                          (e.currentTarget.style.backgroundColor = "#f59e0b")
-                        }
-                      >
-                        Mark as Acknowledged
-                      </button>
-                    )}
-                    {alert.status === "ACK" && (
-                      <button
-                        onClick={() => updateStatus(alert.id, "RESOLVED")}
-                        style={{
-                          padding: "6px 12px",
-                          backgroundColor: "#10b981",
-                          color: "#fff",
-                          border: "none",
-                          borderRadius: "6px",
-                          fontSize: "14px",
-                          fontWeight: 500,
-                          cursor: "pointer",
-                          transition: "background-color 0.2s",
-                        }}
-                        onMouseOver={(e) =>
-                          (e.currentTarget.style.backgroundColor = "#059669")
-                        }
-                        onMouseOut={(e) =>
-                          (e.currentTarget.style.backgroundColor = "#10b981")
-                        }
-                      >
-                        Mark as Resolved
-                      </button>
-                    )}
                   </div>
                 </div>
 
