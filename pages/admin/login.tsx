@@ -93,6 +93,11 @@ export default function AdminLogin() {
           display: "flex",
           gap: "60px",
           alignItems: "center",
+          backgroundColor: "#ffffff",
+          padding: "48px",
+          borderRadius: "16px",
+          border: "2px solid #e5e7eb",
+          boxShadow: "0 10px 30px rgba(0, 0, 0, 0.08)",
         }}
       >
         {/* Left Section - Introduction */}
