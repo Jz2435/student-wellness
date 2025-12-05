@@ -239,30 +239,6 @@ export default function AdminLogin() {
               autoComplete="current-password"
             />
 
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "flex-end",
-                marginBottom: "24px",
-                marginTop: "-12px",
-              }}
-            >
-              <a
-                href="/admin/forgot-password"
-                style={{
-                  fontSize: "13px",
-                  color: "#6b7280",
-                  textDecoration: "none",
-                  fontWeight: 500,
-                  transition: "color 0.2s ease",
-                }}
-                onMouseOver={(e) => (e.currentTarget.style.color = "#7c3aed")}
-                onMouseOut={(e) => (e.currentTarget.style.color = "#6b7280")}
-              >
-                Forgot password?
-              </a>
-            </div>
-
             <button
               type="submit"
               disabled={loading || success}

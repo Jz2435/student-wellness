@@ -235,30 +235,6 @@ export default function Home() {
               autoComplete="current-password"
             />
 
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "flex-end",
-                marginBottom: "24px",
-                marginTop: "-12px",
-              }}
-            >
-              <a
-                href="/forgot-password"
-                style={{
-                  fontSize: "13px",
-                  color: "#6b7280",
-                  textDecoration: "none",
-                  fontWeight: 500,
-                  transition: "color 0.2s ease",
-                }}
-                onMouseOver={(e) => (e.currentTarget.style.color = "#10b981")}
-                onMouseOut={(e) => (e.currentTarget.style.color = "#6b7280")}
-              >
-                Forgot password?
-              </a>
-            </div>
-
             <button
               type="submit"
               disabled={loading || success}
