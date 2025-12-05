@@ -386,11 +386,11 @@ The `.gitignore` file ensures these files/folders are not committed to Git:
 
 **Solution**:
 
-- Backend port 8000 is taken:
+- Backend port 8001 is taken:
   ```bash
-  # Find and kill the process using port 8000
-  # On Linux/Mac: lsof -ti:8000 | xargs kill -9
-  # On Windows: netstat -ano | findstr :8000
+  # Find and kill the process using port 8001
+  # On Linux/Mac: lsof -ti:8001 | xargs kill -9
+  # On Windows: netstat -ano | findstr :8001
   # Then use Task Manager to end the process
   ```
 - Frontend port 3001 is taken: The error message will suggest an alternative port
@@ -413,7 +413,7 @@ The `.gitignore` file ensures these files/folders are not committed to Git:
 
 **Solution**:
 
-- Verify backend is running on port **8000** (not 8001)
+- Verify backend is running on port **8001** 
 - Check that both servers are running simultaneously
 - Try accessing http://localhost:8000 in your browser - you should see `{"message": "FastAPI is running"}`
 - Clear browser cache and reload the page
@@ -667,7 +667,7 @@ Retrieve all alerts (high stress reports requiring attention).
 
 You can test the API using:
 
-1. **Interactive Documentation**: http://localhost:8000/docs
+1. **Interactive Documentation**: http://localhost:8001/docs
 
    - Click on any endpoint to expand it
    - Click "Try it out"
@@ -683,17 +683,17 @@ curl -X POST http://localhost:8000/api/signup \
   -d '{"name":"Test User","email":"test@example.com","password":"password123"}'
 
 # Test login
-curl -X POST http://localhost:8000/api/login \
+curl -X POST http://localhost:8001/api/login \
   -H "Content-Type: application/json" \
   -d '{"email":"test@example.com","password":"password123"}'
 
 # Submit a health report
-curl -X POST http://localhost:8000/api/self-report \
+curl -X POST http://localhost:8001/api/self-report \
   -H "Content-Type: application/json" \
   -d '{"student_id":1,"stress_level":5,"mood":"happy","sleep_hours":8,"comments":"Feeling good"}'
 
 # Get reports for student
-curl http://localhost:8000/api/self-reports?student_id=1
+curl http://localhost:8001/api/self-reports?student_id=1
 ```
 
 3. **Postman or Insomnia**: Import the endpoints and test interactively
@@ -728,7 +728,7 @@ Test these features to ensure everything is working:
 
 ### Automated API Testing
 
-The backend includes FastAPI's automatic API documentation. Visit http://localhost:8000/docs to:
+The backend includes FastAPI's automatic API documentation. Visit http://localhost:8001/docs to:
 
 1. View all available endpoints
 2. See request/response schemas
@@ -782,14 +782,14 @@ npm start
 
 ```bash
 # Using Uvicorn
-uvicorn main:app --host 0.0.0.0 --port 8000
+uvicorn main:app --host 0.0.0.0 --port 8001
 ```
 
 For production with multiple workers, install Gunicorn:
 
 ```bash
 pip install gunicorn
-gunicorn main:app -w 4 -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000
+gunicorn main:app -w 4 -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8001
 ```
 
 #### Option 2: Deploy Frontend to Vercel
@@ -806,36 +806,6 @@ vercel
 
 Create `Dockerfile` for containerized deployment (advanced users).
 
-### Production Considerations
-
-- Use PostgreSQL or MySQL instead of SQLite for better scalability
-- Set up proper authentication with JWT tokens
-- Enable HTTPS/SSL certificates
-- Configure environment variables for sensitive data
-- Set up logging and monitoring
-- Implement rate limiting
-- Use a reverse proxy (nginx) for the backend
-- Set up automatic backups for the database
-
-## 📚 Learning Resources
-
-### For Beginners
-
-If you're new to web development, here are some resources to help you understand this project:
-
-- **Python & FastAPI**:
-  - [Python Official Tutorial](https://docs.python.org/3/tutorial/)
-  - [FastAPI Documentation](https://fastapi.tiangolo.com/)
-- **JavaScript & React**:
-  - [React Official Tutorial](https://react.dev/learn)
-  - [Next.js Documentation](https://nextjs.org/docs)
-- **Databases**:
-
-  - [SQL Tutorial](https://www.w3schools.com/sql/)
-  - [SQLModel Documentation](https://sqlmodel.tiangolo.com/)
-
-- **Git & Version Control**:
-  - [Git Handbook](https://guides.github.com/introduction/git-handbook/)
 
 ### Understanding the Code
 
@@ -849,4 +819,5 @@ If you're new to web development, here are some resources to help you understand
 **Last Updated**: December 2025  
 **Version**: 1.0.0  
 **Maintained by**: Student Wellness Development Team
+
 
