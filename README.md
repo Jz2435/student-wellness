@@ -2,30 +2,9 @@
 
 A comprehensive student wellness tracking application that helps students monitor and improve their mental health through daily health reports and trend analysis.
 
-## 📑 Table of Contents
-
-- [Features](#-features)
-- [Tech Stack](#-tech-stack)
-- [Prerequisites](#-prerequisites)
-- [Installation Guide](#-installation-guide)
-- [Running the Application](#-running-the-application)
-- [First-Time Usage](#-first-time-usage)
-- [Troubleshooting](#-troubleshooting)
-- [Project Structure](#-project-structure)
-- [Database Schema](#-database-schema)
-- [API Documentation](#-api-documentation)
-- [Testing](#-testing)
-- [Deployment](#-deployment-advanced)
-- [Contributing](#-contributing)
-- [FAQ](#-faq)
-
 ## ⚡ Quick Start
 
-**New to the project? Start here!**
-
-**Complete Beginner?** 👉 Start with the [BEGINNER_GUIDE.md](BEGINNER_GUIDE.md) for step-by-step instructions with explanations.
-
-**Have experience?** Follow these steps:
+ Follow these steps:
 
 1. Ensure you have [Python 3.8+](#prerequisites) and [Node.js 18+](#prerequisites) installed
 2. Follow the [Installation Guide](#-installation-guide) step-by-step
@@ -33,9 +12,6 @@ A comprehensive student wellness tracking application that helps students monito
 4. Open http://localhost:3001 and [create your first account](#first-time-usage)
 5. Having issues? Check [Troubleshooting](#-troubleshooting)
 
-> 💡 **Tip**: Use the [SETUP_CHECKLIST.md](SETUP_CHECKLIST.md) to track your progress through installation!
-
-## 🌟 Features
 
 ### User Management
 
@@ -289,45 +265,6 @@ Open your web browser and navigate to:
 - **Backend API Documentation**: http://localhost:8000/docs
 - **Backend API Root**: http://localhost:8000
 
-### How the Application Works
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    Your Web Browser                         │
-│                  http://localhost:3001                      │
-└────────────────────────┬────────────────────────────────────┘
-                         │
-                         ▼
-┌─────────────────────────────────────────────────────────────┐
-│                 Frontend (Next.js)                          │
-│                   Port: 3001                                │
-│  - User Interface (React Components)                        │
-│  - Pages: Login, Signup, Dashboard, Reports, Trends         │
-│  - Charts and Visualizations                                │
-└────────────────────────┬────────────────────────────────────┘
-                         │
-                         │ API Requests
-                         │ (proxied through next.config.js)
-                         ▼
-┌─────────────────────────────────────────────────────────────┐
-│                 Backend (FastAPI)                           │
-│                   Port: 8000                                │
-│  - API Endpoints (/api/login, /api/signup, etc.)           │
-│  - Authentication & Password Hashing                        │
-│  - Business Logic                                           │
-└────────────────────────┬────────────────────────────────────┘
-                         │
-                         │ Database Queries
-                         │ (via SQLModel ORM)
-                         ▼
-┌─────────────────────────────────────────────────────────────┐
-│                 Database (SQLite)                           │
-│                  File: backend/test.db                      │
-│  - Students Table (user accounts)                           │
-│  - SelfReport Table (health reports)                        │
-│  - Admin, Alert, Notification Tables                        │
-└─────────────────────────────────────────────────────────────┘
-```
 
 **Key Points:**
 
@@ -489,71 +426,6 @@ The `.gitignore` file ensures these files/folders are not committed to Git:
 - Frontend: Next.js auto-reloads. If not working, stop (Ctrl+C) and restart `npm run dev`
 - Hard refresh browser: Ctrl+Shift+R (Windows/Linux) or Cmd+Shift+R (Mac)
 
-#### Issue: Password validation fails on signup
-
-**Solution**:
-
-- Ensure password is at least 8 characters
-- Must contain at least 1 letter and 1 number
-- Example valid password: `password123`
-
-### Getting Help
-
-If you're still experiencing issues:
-
-1. Check that you followed all installation steps in order
-2. Verify all prerequisites are installed correctly
-3. Review the terminal output for specific error messages
-4. Try the API documentation at http://localhost:8000/docs to test backend endpoints directly
-5. Open an issue on GitHub with:
-   - Your operating system
-   - Python version (`python --version`)
-   - Node.js version (`node --version`)
-   - Complete error message
-   - Steps you've already tried
-
-## 📊 Project Structure
-
-```
-student-wellness/
-├── backend/                    # Python FastAPI backend
-│   ├── main.py                # Main FastAPI application
-│   ├── models.py              # Database models (Student, SelfReport, Admin, etc.)
-│   ├── requirements.txt       # Python dependencies
-│   ├── test.db               # SQLite database (auto-generated)
-│   └── venv/                 # Python virtual environment (created during setup)
-├── components/                # React components
-│   ├── FormInput.tsx         # Reusable form input component
-│   └── NotificationBell.tsx  # Notification bell component
-├── hooks/                     # Custom React hooks
-│   ├── useAuth.tsx           # Authentication hook
-│   └── useNotifications.tsx  # Notifications hook
-├── pages/                     # Next.js pages (routes)
-│   ├── index.tsx             # Login page (/)
-│   ├── signup.tsx            # User signup (/signup)
-│   ├── dashboard.tsx         # User dashboard (/dashboard)
-│   ├── report.tsx            # Submit health report (/report)
-│   ├── alerts.tsx            # User alerts (/alerts)
-│   ├── admin/                # Admin pages
-│   │   ├── login.tsx         # Admin login
-│   │   ├── signup.tsx        # Admin signup
-│   │   └── dashboard.tsx     # Admin dashboard
-│   ├── api/                  # API route handlers (Next.js API)
-│   │   ├── login.ts          # User login endpoint
-│   │   ├── signup.ts         # User signup endpoint
-│   │   └── self-report.ts    # Health report endpoint
-│   ├── notification/         # Notification pages
-│   │   └── [id].tsx          # Individual notification view
-│   └── trends/               # Trend analysis pages
-│       ├── mood.tsx          # Mood trends
-│       ├── sleep.tsx         # Sleep trends
-│       └── stress.tsx        # Stress trends
-├── node_modules/             # Node.js dependencies (auto-generated)
-├── package.json              # Node.js project configuration
-├── tsconfig.json             # TypeScript configuration
-├── next.config.js            # Next.js configuration
-└── README.md                 # This file
-```
 
 ## 🗄 Database Schema
 
@@ -972,159 +844,9 @@ If you're new to web development, here are some resources to help you understand
 - **Components (`components/`)**: Reusable UI elements
 - **Hooks (`hooks/`)**: Custom React logic for authentication and notifications
 
-## ❓ FAQ
-
-### Q: Do I need to create the database manually?
-
-**A**: No, the SQLite database is automatically created when you first start the backend server.
-
-### Q: Can I use a different port?
-
-**A**: Yes, but you'll need to update:
-
-- Backend port in the `uvicorn` command
-- Frontend proxy in `next.config.js` to match the backend port
-- Any hardcoded URLs in the code
-
-### Q: What if I want to reset everything?
-
-**A**:
-
-1. Delete `backend/test.db` to clear all data
-2. Restart the backend server to recreate the database
-3. Create new accounts and start fresh
-
-### Q: Can multiple users use this at the same time?
-
-**A**: Yes, the application supports multiple concurrent users. Each user has their own account and data.
-
-### Q: Is my data secure?
-
-**A**: For local development, data is stored in a local SQLite file. Passwords are hashed with bcrypt. For production deployment, additional security measures are recommended.
-
-### Q: How do I stop the servers?
-
-**A**: Press `Ctrl+C` in each terminal window where the servers are running.
-
-### Q: Can I contribute to this project?
-
-**A**: Yes! See the Contributing section below.
-
-## 🤝 Contributing
-
-We welcome contributions from the community! Here's how you can help:
-
-### Getting Started
-
-1. **Fork the repository** on GitHub
-2. **Clone your fork** to your local machine:
-   ```bash
-   git clone https://github.com/YOUR-USERNAME/student-wellness.git
-   ```
-3. **Create a new branch** for your feature:
-   ```bash
-   git checkout -b feature-name
-   ```
-4. **Make your changes** and test thoroughly
-5. **Commit your changes** with clear messages:
-   ```bash
-   git add .
-   git commit -m "Add: description of your changes"
-   ```
-6. **Push to your fork**:
-   ```bash
-   git push origin feature-name
-   ```
-7. **Submit a pull request** on GitHub
-
-### Development Guidelines
-
-- Write clear, descriptive commit messages
-- Follow existing code style and conventions
-- Test both frontend and backend changes before submitting
-- Update documentation for new features
-- Ensure the application runs without errors
-- Add comments to explain complex logic
-- Keep pull requests focused on a single feature or fix
-
-### Types of Contributions Welcome
-
-- 🐛 Bug fixes
-- ✨ New features
-- 📝 Documentation improvements
-- 🎨 UI/UX enhancements
-- ♿ Accessibility improvements
-- 🌐 Internationalization (i18n)
-- ✅ Test coverage
-- 🔧 Configuration improvements
-
-### Code of Conduct
-
-- Be respectful and inclusive
-- Provide constructive feedback
-- Help others learn and grow
-- Focus on the best solution, not ego
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-### What this means:
-
-- ✅ You can use this code for personal projects
-- ✅ You can use this code for commercial projects
-- ✅ You can modify and distribute this code
-- ✅ You must include the license notice in copies
-- ❌ No warranty or liability from the authors
-
-## 🙏 Acknowledgments
-
-- **Built with**: Next.js, FastAPI, Chart.js, and SQLModel
-- **Inspired by**: The need for better student mental health tracking and awareness
-- **Thanks to**: The open-source community for amazing tools and libraries
-- **Contributors**: All the developers who have contributed to this project
-
-## 📞 Support & Contact
-
-### Having Issues?
-
-1. **Check the [Troubleshooting](#-troubleshooting) section** - Most common issues are covered there
-2. **Review the [FAQ](#-faq)** - Quick answers to common questions
-3. **Check existing issues** on GitHub - Someone might have had the same problem
-4. **Open a new issue** on GitHub with:
-   - Clear description of the problem
-   - Steps to reproduce
-   - Your environment (OS, Python version, Node version)
-   - Error messages or screenshots
-   - What you've already tried
-
-### Questions or Suggestions?
-
-- **GitHub Issues**: For bug reports and feature requests
-- **GitHub Discussions**: For questions and general discussion
-- **Pull Requests**: For contributing code improvements
-
-### Project Links
-
-- **Repository**: https://github.com/Jz2435/student-wellness
-- **Issues**: https://github.com/Jz2435/student-wellness/issues
-- **Pull Requests**: https://github.com/Jz2435/student-wellness/pulls
-
----
-
-## 🎓 Project Background
-
-This Student Wellness App was developed to help students track and improve their mental health through:
-
-- Daily self-reporting of stress, mood, and sleep
-- Data visualization to identify patterns
-- Early intervention through automated alerts
-- Administrative oversight for campus wellness programs
-
-**Happy coding! 🌱** Keep track of your wellness journey with data-driven insights.
-
 ---
 
 **Last Updated**: December 2025  
 **Version**: 1.0.0  
 **Maintained by**: Student Wellness Development Team
+
