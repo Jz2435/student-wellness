@@ -155,6 +155,13 @@ npm run dev
 - Application: http://localhost:3001
 - API Docs: http://localhost:8001/docs
 
+**Test Accounts:**
+
+You can create your own student and admin accounts, or use the existing accounts:
+
+- **Student Account**: `student@cornell.edu`, password: `Testpassword1`
+- **Admin Account**: `admin@cornell.edu`, password: `Testpassword1`
+
 #### Issue: "Command not found: python3" or "Command not found: python"
 
 **Solution**:
