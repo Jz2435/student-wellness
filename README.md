@@ -342,84 +342,9 @@ Authenticate an admin user.
 
 Retrieve all alerts (high stress reports requiring attention).
 
-### Testing the API
 
-You can test the API using:
-
-1. **Interactive Documentation**: http://localhost:8001/docs
-
-   - Click on any endpoint to expand it
-   - Click "Try it out"
-   - Fill in the request body
-   - Click "Execute"
-
-2. **cURL Commands** (in terminal):
-
-```bash
-# Test signup
-curl -X POST http://localhost:8001/api/signup \
-  -H "Content-Type: application/json" \
-  -d '{"name":"Test User","email":"test@example.com","password":"password123"}'
-
-# Test login
-curl -X POST http://localhost:8001/api/login \
-  -H "Content-Type: application/json" \
-  -d '{"email":"test@example.com","password":"password123"}'
-
-# Submit a health report
-curl -X POST http://localhost:8001/api/self-report \
-  -H "Content-Type: application/json" \
-  -d '{"student_id":1,"stress_level":5,"mood":"happy","sleep_hours":8,"comments":"Feeling good"}'
-
-# Get reports for student
-curl http://localhost:8001/api/self-reports?student_id=1
-```
-
-3. **Postman or Insomnia**: Import the endpoints and test interactively
-
-## 🔒 Security Features
-
-- **Password Hashing**: All passwords are hashed using bcrypt with salt before storage
-- **Input Validation**: Client and server-side validation for all user inputs
-- **SQL Injection Protection**: Parameterized queries via SQLModel ORM
-- **CORS Configuration**: Cross-Origin Resource Sharing configured for security
-- **Session Management**: Secure token-based authentication
-- **Unique Email Constraint**: Prevents duplicate account creation
-
-## 🧪 Testing
-
-### Manual Testing Checklist
-
-Test these features to ensure everything is working:
-
-- [ ] User registration with valid data
-- [ ] User registration with invalid data (weak password, duplicate email)
-
-## API Testing
-
-Interactive docs: http://localhost:8001/docs
-
-**Quick test:**
-
-```bash
-curl -X POST http://localhost:8001/api/signup \
-  -H "Content-Type: application/json" \
-  -d '{"name":"Test","email":"test@example.com","password":"password123"}'
-```
-
-## Project Structure
-
-```
-student-wellness/
-├── backend/
-│   ├── main.py          # API endpoints
-│   ├── models.py        # Database models
-│   └── requirements.txt
-├── pages/               # Next.js routes
-├── components/          # React components
-└── package.json
-```
 
 ---
 
 **Version**: 1.0.0
+
