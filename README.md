@@ -84,10 +84,10 @@ venv\Scripts\Activate.ps1
 #### Step 3: Start the Server
 
 ```bash
-uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+uvicorn main:app --host 0.0.0.0 --port 8001 --reload
 ```
 
-> **Important**: Use port **8000** (not 8001). The frontend is configured to communicate with the backend on port 8000.
+> **Important**: Use port **8001**. The frontend is configured to communicate with the backend on port 8001.
 
 You should see output like:
 
@@ -131,8 +131,8 @@ You should see output like:
 Open your web browser and navigate to:
 
 - **Main Application**: http://localhost:3001
-- **Backend API Documentation**: http://localhost:8000/docs
-- **Backend API Root**: http://localhost:8000
+- **Backend API Documentation**: http://localhost:8001/docs
+- **Backend API Root**: http://localhost:8001
 
 ## Running the Application
 
@@ -212,7 +212,7 @@ npm run dev
 
 - Verify backend is running on port **8001**
 - Check that both servers are running simultaneously
-- Try accessing http://localhost:8000 in your browser - you should see `{"message": "FastAPI is running"}`
+- Try accessing http://localhost:8001 in your browser - you should see `{"message": "FastAPI is running"}`
 - Clear browser cache and reload the page
 
 #### Issue: Changes not appearing after editing code
@@ -350,7 +350,7 @@ You can test the API using:
 
 ```bash
 # Test signup
-curl -X POST http://localhost:8000/api/signup \
+curl -X POST http://localhost:8001/api/signup \
   -H "Content-Type: application/json" \
   -d '{"name":"Test User","email":"test@example.com","password":"password123"}'
 
